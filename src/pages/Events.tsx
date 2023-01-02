@@ -5,6 +5,7 @@ import {getAllEvents} from "../services/EventService";
 import {Layout} from "../layouts/Layout";
 import {Link} from "react-router-dom";
 import {FullCentered, GridCell, GridContainer} from "../assets/styles/Containers";
+import {CreateEvent} from "../features/Event/components/CreateEvent";
 
 export default function Events() {
     const { jwt } = useContext(AuthContext);
@@ -21,9 +22,12 @@ export default function Events() {
 
     return (
         <Layout>
-            <FullCentered>
+            {/*<FullCentered>*/}
                 <GridContainer>
-                    <GridCell area='1 / 1 / 2 / 2'>
+                    <GridCell area='1 / 1 / 2 / 3'>
+                        <CreateEvent />
+                    </GridCell>
+                    <GridCell area='2 / 1 / 3 / 2'>
                         <h5>Events</h5>
                         <ul>
                             {events.map(event => (
@@ -31,7 +35,7 @@ export default function Events() {
                             ))}
                         </ul>
                     </GridCell>
-                    <GridCell area='1 / 2 / 2 / 3'>
+                    <GridCell area='2 / 2 / 3 / 3'>
                         <h5>Owned Events</h5>
                         <ul>
                             {ownedEvents.map(event => (
@@ -40,7 +44,7 @@ export default function Events() {
                         </ul>
                     </GridCell>
                 </GridContainer>
-            </FullCentered>
+            {/*</FullCentered>*/}
         </Layout>
     );
 }
