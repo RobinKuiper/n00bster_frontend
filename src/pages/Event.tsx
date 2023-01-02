@@ -1,7 +1,7 @@
 import {AuthContext} from "../context/AuthContext";
 import {useContext, useEffect} from "react";
 import {EventContext} from "../context/EventContext";
-import {getEvent} from "../services/EventService";
+import {getEvent, joinEvent} from "../services/EventService";
 import {useParams} from "react-router-dom";
 import {Calendar} from "../features/Event/components/Calendar";
 import {EventInfo} from "../features/Event/components/EventInfo";
@@ -22,10 +22,18 @@ export default function Event() {
         if(!event || event.identifier !== identifier) {
             if(jwt) {
                 getEvent(jwt, identifier).then(event => {
-                    event.isOwner = userId === event.owner.id
-                    setEvent(event)
-                    setLoading(false);
-                });
+                    if(event){
+                        event.isOwner = userId === event.owner.id
+                        setEvent(event)
+                        setLoading(false);
+                    } else {
+                        joinEvent(jwt, identifier).then((event) => {
+                            event.isOwner = userId === event.owner.id
+                            setEvent(event)
+                            setLoading(false);
+                        })
+                    }
+                }).catch((err) => console.log(err));
             }
         }
     }, [jwt]);

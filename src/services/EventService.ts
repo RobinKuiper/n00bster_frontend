@@ -14,10 +14,16 @@ const getEvent = async (jwt: string, identifier: string) => {
     });
 }
 
+const joinEvent = async (jwt: string, identifier: string) => {
+    return await getRequest(`/events/join/${identifier}`, jwt).catch(err => {
+        console.log("ERR", err)
+    });
+}
+
 const getAllEvents = async (jwt: string) => {
     return await getRequest(`/events/all`, jwt).catch(err => {
         console.log("ERR", err)
     });
 }
 
-export { createEvent, getEvent, getAllEvents }
+export { createEvent, getEvent, getAllEvents, joinEvent }
