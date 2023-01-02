@@ -1,9 +1,11 @@
 import React, { createContext, useEffect, useState } from 'react';
 import {register} from "../services/AuthService";
+import jwtDecode from "jwt-decode";
 
 interface AuthContextData {
   jwt: string | null;
   isLoggedIn: boolean;
+  userId: number;
   login: (jwt: string) => void;
   logout: () => void;
 }
@@ -11,6 +13,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({
   jwt: null,
   isLoggedIn: false,
+  userId: -1,
   login: () => {},
   logout: () => {},
 });
@@ -22,6 +25,7 @@ interface Props {
 const AuthProvider: React.FC<Props> = ({ children }: Props) => {
   const [jwt, setJwt] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState<number>(-1);
 
   useEffect(() => {
     if(jwt) return;
@@ -29,8 +33,7 @@ const AuthProvider: React.FC<Props> = ({ children }: Props) => {
     console.log("Check Auth.");
     const storedJwt = localStorage.getItem('jwt');
     if (storedJwt) {
-      setJwt(storedJwt);
-      setIsLoggedIn(true);
+      login(storedJwt);
     }else{
       register({ visitor: true })
         .then(response => {
@@ -44,6 +47,8 @@ const AuthProvider: React.FC<Props> = ({ children }: Props) => {
     setJwt(newJwt);
     localStorage.setItem('jwt', newJwt);
     setIsLoggedIn(true);
+    let decoded: { userId: number } = jwtDecode(newJwt);
+    setUserId(decoded.userId)
   };
 
   const logout = () => {
@@ -53,7 +58,7 @@ const AuthProvider: React.FC<Props> = ({ children }: Props) => {
   };
 
   return (
-    <AuthContext.Provider value={{ jwt, isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ jwt, isLoggedIn, userId, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

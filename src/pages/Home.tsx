@@ -4,16 +4,7 @@ import {createEvent} from "../services/EventService";
 import styled from 'styled-components';
 import {useNavigate} from "react-router-dom";
 import {EventContext} from "../context/EventContext";
-
-const Container = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: radial-gradient(circle, rgba(2,0,36,1) 40%, rgba(35,25,94,1) 75%, rgba(74,56,164,1) 100%);
-    color: white;
-    font-family: arial, serif;
-`
+import {FullCentered} from "../assets/styles/Containers";
 
 const Heading = styled.h1`
     text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
@@ -72,7 +63,7 @@ export default function Home() {
     }
 
     return (
-        <Container>
+        <FullCentered>
             <div>
                 <Heading>Create an Event...</Heading>
                 <div>
@@ -82,6 +73,6 @@ export default function Home() {
                     </Form>
                 </div>
             </div>
-        </Container>
+        </FullCentered>
     );
 }

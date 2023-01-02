@@ -75,7 +75,7 @@ export const Layout = ({children}: Props) => {
                 <Title>n00bsters</Title>
                 <Menu>
                     {routes.map(item => (
-                        <MenuItem to={item.path}>{item.title}</MenuItem>
+                        <MenuItem key={item.path} to={item.path}>{item.title}</MenuItem>
                     ))}
                 </Menu>
                 <LogoutButton>Logout</LogoutButton>

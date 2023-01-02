@@ -3,33 +3,17 @@ import {useContext, useEffect} from "react";
 import {EventContext} from "../context/EventContext";
 import {getEvent} from "../services/EventService";
 import {useParams} from "react-router-dom";
-import styled from "styled-components";
 import {Calendar} from "../features/Event/components/Calendar";
 import {EventInfo} from "../features/Event/components/EventInfo";
 import {Necessities} from "../features/Event/components/Necessities";
 import { Members } from "../features/Event/components/Members";
 import {Layout} from "../layouts/Layout";
 import {LoadingContext} from "../context/LoadingContext";
-
-const GridContainer = styled.div`
-    display: grid;
-    grid-template-columns: 2.5fr repeat(2, 1fr);
-    grid-template-rows: 1fr 1.5fr;
-    grid-column-gap: 0;
-    grid-row-gap: 0;
-`
-type Props = {
-    area: string;
-    padding?: string;
-}
-const GridCell = styled.div<Props>`
-  grid-area: ${props => props.area};
-  padding: ${props => props.padding ?? '10px'};
-`
+import {GridCell, GridContainer} from "../assets/styles/Containers";
 
 export default function Event() {
     const { identifier = '' } = useParams()
-    const { jwt } = useContext(AuthContext);
+    const { jwt, userId } = useContext(AuthContext);
     const { event, setEvent } = useContext(EventContext);
     const { loading, setLoading } = useContext(LoadingContext);
 
@@ -38,6 +22,7 @@ export default function Event() {
         if(!event || event.identifier !== identifier) {
             if(jwt) {
                 getEvent(jwt, identifier).then(event => {
+                    event.isOwner = userId === event.owner.id
                     setEvent(event)
                     setLoading(false);
                 });
@@ -53,13 +38,13 @@ export default function Event() {
                         <Calendar />
                     </GridCell>
                     <GridCell area='1 / 2 / 2 / 4'>
-                        <EventInfo event={event} />
+                        <EventInfo />
                     </GridCell>
                     <GridCell area='2 / 2 / 3 / 3'>
-                        <Necessities event={event} />
+                        <Necessities />
                     </GridCell>
                     <GridCell area='2 / 3 / 3 / 4'>
-                        <Members event={event} />
+                        <Members />
                     </GridCell>
                 </GridContainer>
             ) : (

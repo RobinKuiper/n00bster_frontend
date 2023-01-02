@@ -1,15 +1,19 @@
 // @flow
 import * as React from 'react';
-import Event from '../../../types/Event';
+import {useContext} from "react";
+import {EventContext} from "../../../context/EventContext";
 
-type Props = {
-    event: Event;
-};
-export const EventInfo = ({ event }: Props) => {
+export const EventInfo = () => {
+    const { event } = useContext(EventContext);
+
     return (
         <div>
-            <h3>{event.title}</h3>
-            <p>{event.description}</p>
+            {event && (
+                <>
+                    <h3>{event.title}</h3>
+                    <p>{event.description}</p>
+                </>
+            )}
         </div>
     );
 };
