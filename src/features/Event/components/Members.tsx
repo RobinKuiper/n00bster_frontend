@@ -12,7 +12,7 @@ export const Members = () => {
         members = event.members.length === 0
             ? <p>No one (yet).</p>
             : event.members.map((member: User) => (
-                <p key={member.id}>{member.username}</p>
+                <p key={member.id}>{member.displayName ?? member.username ?? 'New User'}</p>
             ))
     }
 
