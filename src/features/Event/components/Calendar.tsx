@@ -7,7 +7,7 @@ import "react-multi-date-picker/styles/layouts/mobile.css"
 // import "react-multi-date-picker/styles/backgrounds/bg-dark.css"
 import "react-multi-date-picker/styles/colors/purple.css"
 import {useContext, useEffect, useState} from "react";
-import {addDate, getPickedDates, pickDate} from "../../../services/DateService";
+import {addDate, getPickedDates, pickDate, unpickDate} from "../../../services/DateService";
 import {AuthContext} from "../../../context/AuthContext";
 import {EventContext} from "../../../context/EventContext";
 import Date from '../../../types/Date';
@@ -66,7 +66,7 @@ export const Calendar = () => {
             } else {
                 let removedDate = getDifference(pickedDates, newDates)[0];
                 setPickedDates(dates => dates.filter((date: DateObject) => date.toUnix() !== removedDate.toUnix() ))
-                // removeDate(jwt, )
+                unpickDate(jwt, { date: removedDate.format(), eventId: event.id })
             }
         }
     }
