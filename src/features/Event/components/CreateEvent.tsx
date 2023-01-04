@@ -14,10 +14,11 @@ const Form = styled.form`
         margin: 8px 0;
         border: 1px solid #ccc;
         border-radius: 4px 0 0 4px;
+        width: 100%;
     }
     
     input[type="submit"] {
-        background-color: #4caf50;
+        background-color: purple;
         color: white;
         padding: 12px 20px;
         margin: 8px 0;

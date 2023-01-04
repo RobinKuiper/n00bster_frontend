@@ -2,9 +2,8 @@
 import * as React from 'react';
 import {Calendar as DatePicker, DateObject} from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
-
 import "react-multi-date-picker/styles/layouts/mobile.css"
-// import "react-multi-date-picker/styles/backgrounds/bg-dark.css"
+import "react-multi-date-picker/styles/backgrounds/bg-dark.css"
 import "react-multi-date-picker/styles/colors/purple.css"
 import {useContext, useEffect, useState} from "react";
 import dateService from "../../../services/DateService";

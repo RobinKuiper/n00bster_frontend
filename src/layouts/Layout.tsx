@@ -14,10 +14,9 @@ const TopBar = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 50px;
-  background-color: #333;
+  background-color: #292929;
   color: white;
   padding: 0 20px;
-  margin-bottom: 20px;
 `
 
 const Title = styled.h1`
@@ -65,6 +64,7 @@ const LinkButton = styled(Link)`
 `;
 
 const Content = styled.div`
+  padding-top: 20px;
 `
 
 const routes = [
