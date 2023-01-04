@@ -7,7 +7,7 @@ import "react-multi-date-picker/styles/layouts/mobile.css"
 // import "react-multi-date-picker/styles/backgrounds/bg-dark.css"
 import "react-multi-date-picker/styles/colors/purple.css"
 import {useContext, useEffect, useState} from "react";
-import {addDate, getPickedDates, pickDate, unpickDate} from "../../../services/DateService";
+import dateService from "../../../services/DateService";
 import {AuthContext} from "../../../context/AuthContext";
 import {EventContext} from "../../../context/EventContext";
 import Date from '../../../types/Date';
@@ -15,7 +15,7 @@ import Date from '../../../types/Date';
 function getDifference(array1: DateObject[], array2: DateObject[]) {
     return array1.filter(object1 => {
         return !array2.some(object2 => {
-            return object1.year === object2.year && object1.month === object2.month && object1.day === object2.day;
+            return object1.year === object2.year && object1.month.number === object2.month.number && object1.day === object2.day;
         });
     });
 }
@@ -36,7 +36,7 @@ export const Calendar = () => {
 
     useEffect(() => {
         if(!event?.isOwner && jwt && event) {
-            getPickedDates(jwt, event.id).then(dates => {
+            dateService.getPickedDates(jwt, event.id).then(dates => {
                 setPickedDates(dates.map((date: Date) => {
                     return new DateObject(date.date);
                 }));
@@ -51,22 +51,22 @@ export const Calendar = () => {
             if (newDates.length > allowedDates.length) {
                 let newDate = getDifference(newDates, allowedDates)[0];
                 setAllowedDates(dates => [...dates, newDate])
-                addDate(jwt, { date: newDate.format(), eventId: event.id });
+                dateService.addDate(jwt, { date: newDate.format(), eventId: event.id });
             } else {
                 let removedDate = getDifference(allowedDates, newDates)[0]
                 setAllowedDates(dates => dates.filter((date: DateObject) => date.toUnix() !== removedDate.toUnix()))
-                // removeDate(jwt, )
+                dateService.removeDate(jwt, { date: removedDate.format(), eventId: event.id })
             }
         } else {
             if (newDates.length > pickedDates.length) {
                 let newDate = getDifference(newDates, pickedDates)[0];
                 setPickedDates(dates => [...dates, newDate])
                 // addDate(jwt, {date: newDate.format(), eventId: event.id});
-                pickDate(jwt, { date: newDate.format(), eventId: event.id })
+                dateService.pickDate(jwt, { date: newDate.format(), eventId: event.id })
             } else {
                 let removedDate = getDifference(pickedDates, newDates)[0];
                 setPickedDates(dates => dates.filter((date: DateObject) => date.toUnix() !== removedDate.toUnix() ))
-                unpickDate(jwt, { date: removedDate.format(), eventId: event.id })
+                dateService.unpickDate(jwt, { date: removedDate.format(), eventId: event.id })
             }
         }
     }

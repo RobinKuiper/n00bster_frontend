@@ -1,10 +1,10 @@
 import {AuthContext} from "../context/AuthContext";
 import {useContext, useEffect} from "react";
 import {EventContext} from "../context/EventContext";
-import {getAllEvents} from "../services/EventService";
+import eventService from "../services/EventService";
 import {Layout} from "../layouts/Layout";
 import {Link} from "react-router-dom";
-import {FullCentered, GridCell, GridContainer} from "../assets/styles/Containers";
+import {GridCell, GridContainer} from "../assets/styles/Containers";
 import {CreateEvent} from "../features/Event/components/CreateEvent";
 
 export default function Events() {
@@ -12,8 +12,8 @@ export default function Events() {
     const { events, ownedEvents, setEvents, setOwnedEvents } = useContext(EventContext);
 
     useEffect(() => {
-        if(jwt) {
-            getAllEvents(jwt).then(events => {
+        if(jwt && events.length <= 0) {
+            eventService.getAllEvents(jwt).then(events => {
                 setEvents(events.events)
                 setOwnedEvents(events.owned)
             });
@@ -31,7 +31,7 @@ export default function Events() {
                         <h5>Events</h5>
                         <ul>
                             {events.map(event => (
-                                <li><Link to={`/event/${event.identifier}`}>{event.title}</Link></li>
+                                <li key={event.identifier}><Link to={`/event/${event.identifier}`}>{event.title}</Link></li>
                             ))}
                         </ul>
                     </GridCell>
@@ -39,7 +39,7 @@ export default function Events() {
                         <h5>Owned Events</h5>
                         <ul>
                             {ownedEvents.map(event => (
-                                <li><Link to={`/event/${event.identifier}`}>{event.title}</Link></li>
+                                <li key={event.identifier}><Link to={`/event/${event.identifier}`}>{event.title}</Link></li>
                             ))}
                         </ul>
                     </GridCell>

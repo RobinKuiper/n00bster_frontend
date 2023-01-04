@@ -2,6 +2,8 @@
 import * as React from 'react';
 import styled from "styled-components";
 import {Link} from "react-router-dom";
+import {useContext} from "react";
+import {AuthContext} from "../context/AuthContext";
 
 const Container = styled.div`
 
@@ -51,6 +53,17 @@ const LogoutButton = styled.button`
   }
 `;
 
+const LinkButton = styled(Link)`
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 const Content = styled.div`
 `
 
@@ -69,6 +82,8 @@ type Props = {
     children: React.ReactNode;
 };
 export const Layout = ({children}: Props) => {
+    const { isLoggedIn, logout, displayName } = useContext(AuthContext);
+
     return (
         <Container>
             <TopBar>
@@ -78,7 +93,16 @@ export const Layout = ({children}: Props) => {
                         <MenuItem key={item.path} to={item.path}>{item.title}</MenuItem>
                     ))}
                 </Menu>
-                <LogoutButton>Logout</LogoutButton>
+                {isLoggedIn ? (
+                    <div>
+                        <span>{displayName}</span>
+                        <LogoutButton onClick={logout}>Logout</LogoutButton>
+                    </div>
+                ) : (
+                    <div>
+                        <LinkButton to='/login'>Login</LinkButton>
+                    </div>
+                )}
             </TopBar>
 
             <Content>

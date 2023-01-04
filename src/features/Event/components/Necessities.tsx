@@ -3,7 +3,7 @@ import * as React from 'react';
 import styled from "styled-components";
 import {useContext, useEffect, useState} from "react";
 import {EventContext} from "../../../context/EventContext";
-import {addNecessity, removeNecessity} from "../../../services/NecessityService";
+import necessityService from "../../../services/NecessityService";
 import {AuthContext} from "../../../context/AuthContext";
 import Necessity from "../../../types/Necessity";
 
@@ -24,7 +24,7 @@ export const Necessities = () => {
     const [title, setTitle] = useState("");
     const [necessities, setNecessities] = useState<Necessity[]>([]);
     const { event } = useContext(EventContext);
-    const { jwt } = useContext(AuthContext);
+    const { jwt, userId } = useContext(AuthContext);
 
     useEffect(() => {
         if(event) {
@@ -43,7 +43,7 @@ export const Necessities = () => {
                 amount: 1
             }
 
-            let necessity = await addNecessity(jwt, data);
+            let necessity = await necessityService.addNecessity(jwt, data);
 
             if(necessity){
                 setNecessities(necessities => [...necessities, necessity])
@@ -56,7 +56,7 @@ export const Necessities = () => {
 
         if(!id) return;
 
-        if(jwt) removeNecessity(jwt, id).then(() => {
+        if(jwt) necessityService.removeNecessity(jwt, id).then(() => {
             setNecessities(necessities => necessities.filter(necessity => necessity.id !== id))
         });
     }
@@ -68,7 +68,7 @@ export const Necessities = () => {
             : necessities.map((necessity: Necessity) => (
                 <p key={necessity.id}>
                     {necessity.name}
-                    {event.isOwner && (
+                    {event.isOwner || necessity.creator.id === userId && (
                         <button data-id={necessity.id} onClick={handleRemove as any}>x</button>
                     )}
                 </p>

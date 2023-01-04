@@ -3,7 +3,7 @@ import {useContext, useEffect} from "react";
 import styled from 'styled-components';
 import {useNavigate} from "react-router-dom";
 import {FullCentered} from "../assets/styles/Containers";
-import {CreateEvent} from "../features/Event/components/CreateEvent";
+import {LoginForm} from "../features/Auth/LoginForm";
 
 const Heading = styled.h1`
     text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
@@ -19,7 +19,7 @@ const ButtonLink = styled.a`
   }
 `
 
-export default function Home() {
+export default function Login() {
     const { isLoggedIn } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -31,11 +31,11 @@ export default function Home() {
     return (
         <FullCentered>
             <div>
-                <Heading>Create an Event...</Heading>
+                <Heading>Login</Heading>
                 <div>
-                    <CreateEvent />
+                    <LoginForm />
                     <p>
-                        Or <ButtonLink href='/login'>Login</ButtonLink>
+                        Or <ButtonLink href='/register'>Register</ButtonLink>
                     </p>
                 </div>
             </div>

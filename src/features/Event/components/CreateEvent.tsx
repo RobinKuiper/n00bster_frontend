@@ -1,9 +1,8 @@
 // @flow
 import * as React from 'react';
-import {createEvent} from "../../../services/EventService";
+import eventService from "../../../services/EventService";
 import {useContext, useState} from "react";
 import {AuthContext} from "../../../context/AuthContext";
-import {EventContext} from "../../../context/EventContext";
 import {useNavigate} from "react-router-dom";
 import styled from "styled-components";
 
@@ -33,8 +32,7 @@ const Form = styled.form`
 `
 
 export const CreateEvent = () => {
-    const { jwt } = useContext(AuthContext);
-    const { setEvent } = useContext(EventContext);
+    const { jwt, login } = useContext(AuthContext);
     const [title, setTitle] = useState<string>("");
     const navigate = useNavigate();
 
@@ -44,14 +42,21 @@ export const CreateEvent = () => {
             title,
         }
 
-        if (jwt) {
-            let event = await createEvent(jwt, data);
+        let event = await eventService.createEvent(jwt, data);
 
-            if(event){
-                setEvent(event);
-                navigate('/event/' + event.identifier);
+        if(event){
+            if(event.jwt) {
+                let jwt = event.jwt;
+                event = event.event;
+
+                if (jwt) login(jwt);
             }
+            // event.isOwner = userId === event.owner.id
+            // console.log(event);
+            // setEvent(event);
+            navigate('/event/' + event.identifier);
         }
+
     }
 
     return (

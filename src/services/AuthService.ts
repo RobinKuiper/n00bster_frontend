@@ -6,15 +6,28 @@ interface RegisterData {
     password?: string;
 }
 
-const register = async (data: RegisterData = {}) => {
-    const { visitor } = data;
-    let path = '/authentication/register/';
-
-    if(visitor){
-        path += 'guest';
-    }
-
-    return await postRequest(path,null, data)
+interface LoginData {
+    username: string;
+    password: string;
 }
 
-export { register }
+const AuthService = {
+    register: async (data: RegisterData = {}) => {
+        const { visitor } = data;
+        let path = '/authentication/register';
+
+        if(visitor){
+            path += 'guest';
+        }
+
+        return await postRequest(path,null, data)
+    },
+
+    login: async (data: LoginData) => {
+        let path = '/authentication/login';
+
+        return await postRequest(path,null, data)
+    }
+}
+
+export default AuthService;

@@ -22,6 +22,13 @@ const postRequest = async (path: string, jwt: string|null = null, data = {}, opt
     return response.data;
 }
 
+const deleteRequest = async (path: string, jwt: string|null = null, options = {}) => {
+    options = setAuthorizationHeader(jwt, options);
+
+    const response = await axios.delete(createUrl(path), options);
+    return response.data;
+}
+
 const setAuthorizationHeader = (jwt: string|null, options: Options = {}) => {
     if (jwt) {
         options.headers = {
@@ -36,4 +43,4 @@ const createUrl = (path: string): string => {
     return API_URL+path+"?XDEBUG_SESSION_START=PHPSTORM";
 }
 
-export { getRequest, postRequest }
+export { getRequest, postRequest, deleteRequest }
