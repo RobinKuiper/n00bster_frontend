@@ -9,7 +9,7 @@ interface Event {
     identifier: string;
     members: [];
     necessities: Necessity[];
-    dates: DateResponse[];
+    dates: any[];
     pickedDates: DateResponse[];
     owner: User;
     isOwner: boolean;

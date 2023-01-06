@@ -7,6 +7,7 @@ import {EventContext} from "../../../context/EventContext";
 import {countBy, Dictionary, groupBy, max, sortBy} from "lodash";
 import User from "../../../types/User";
 import styled from "styled-components";
+import {DateObject} from "react-multi-date-picker";
 
 const Container = styled.div`
   display: flex;
@@ -34,9 +35,9 @@ interface ObjectType {
     date: string
 }
 
-function group(objectArray: Array<ObjectType>): { [key: string]: Array<ObjectType> } {
+function group(objectArray: Array<{ user: User, date: string }>): { [key: string]: Array<ObjectType> } {
     return objectArray.reduce((acc: { [key: string]: Array<ObjectType> }, obj) => {
-        const key = obj['date'];
+        const key = obj.date;
         if (!acc[key]) {
             acc[key] = [];
         }
@@ -50,47 +51,56 @@ type Props = {
     
 };
 export const PickedDates = (props: Props) => {
-    const [pickedDates, setPickedDates] = useState<{ [key: string]: ObjectType[]; }>({});
+    const [groupedPickedDates, setGroupedPickedDates] = useState<{ [key: string]: ObjectType[]; }>({});
     const {jwt} = useContext(AuthContext);
-    const {event} = useContext(EventContext);
+    const {event, allPickedDates, setAllPickedDates} = useContext(EventContext);
 
     useEffect(() => {
         if(event && jwt) {
-            dateService.getAllPickedDates(jwt, event.id).then((dates: Array<ObjectType>) => {
-                const grouped = group(dates);
-
-                const sorted = Object.entries(grouped).sort(
-                    (a, b) =>
-                        b[1].length - a[1].length)
-
-                setPickedDates(Object.fromEntries(sorted));
+            dateService.getAllPickedDates(jwt, event.id).then(dates => {
+                setAllPickedDates(dates)
             })
         }
     }, [event])
+
+    useEffect(() => {
+        const grouped = group(allPickedDates);
+
+        const sorted = Object.entries(grouped).sort(
+            (a, b) =>
+                b[1].length - a[1].length)
+
+        setGroupedPickedDates(Object.fromEntries(sorted));
+    }, [allPickedDates]);
+
 
     return (
         <Container>
             <h5>Picked Dates</h5>
 
-            <div>Best date so far: <span>{Object.keys(pickedDates)[0]}</span></div>
+            <div>Best date so far: <span>{Object.keys(groupedPickedDates)[0]}</span></div>
 
             <Table>
-                <tr>
-                   <th>Date</th>
-                   <th>Votes</th>
-                   <th>Members</th>
-                </tr>
-            { Object.keys(pickedDates).map((key: string) => (
-                <tr>
-                    <td>{ key }</td>
-                    <td>{ pickedDates[key].length }</td>
-                    <td>
-                        { pickedDates[key].map(value => (
-                            <span>{ value.user.displayName }, </span>
-                        ))}
-                    </td>
-                </tr>
-            )) }
+                <thead>
+                    <tr>
+                       <th>Date</th>
+                       <th>Votes</th>
+                       <th>Members</th>
+                    </tr>
+                </thead>
+                <tbody>
+                { Object.keys(groupedPickedDates).map((key: string) => (
+                    <tr key={key}>
+                        <td>{ key }</td>
+                        <td>{ groupedPickedDates[key].length }</td>
+                        <td>
+                            { groupedPickedDates[key].map((value, id) => (
+                                <span key={id}>{ value.user.displayName }, </span>
+                            ))}
+                        </td>
+                    </tr>
+                )) }
+                </tbody>
             </Table>
         </Container>
     );

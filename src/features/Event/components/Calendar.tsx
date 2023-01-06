@@ -22,52 +22,53 @@ function getDifference(array1: DateObject[], array2: DateObject[]) {
 
 export const Calendar = () => {
     const {jwt} = useContext(AuthContext);
-    const {event} = useContext(EventContext);
-    const [allowedDates, setAllowedDates] = useState<DateObject[]>([]);
-    const [pickedDates, setPickedDates] = useState<DateObject[]>([]);
+    const {event, usersPickedDates, allowedDates} = useContext(EventContext);
+    const [calendarAllowedDates, setCalendarAllowedDates] = useState<DateObject[]>([]);
+    const [calendarPickedDates, setCalendarPickedDates] = useState<DateObject[]>([]);
 
     useEffect(() => {
         if(event) {
-            setAllowedDates(event.dates.map((date) => {
-                return new DateObject(date.date);
-            }));
+            setCalendarAllowedDates(allowedDates.map((date) => new DateObject(date) ));
         }
-    }, [event]);
+    }, [allowedDates]);
 
     useEffect(() => {
-        if(!event?.isOwner && jwt && event) {
-            dateService.getUsersPickedDates(jwt, event.id).then(dates => {
-                setPickedDates(dates.map((date: DateResponse) => {
-                    return new DateObject(date.date);
-                }));
-            })
+        if(!event?.isOwner) {
+            setCalendarPickedDates(usersPickedDates.map((date: string) => {
+                return new DateObject(date);
+            }));
         }
-    }, [event]);
+    }, [usersPickedDates]);
 
     const handleChange = (newDates: DateObject[]) => {
         if(!event || !jwt) return
 
         if(event.isOwner) {
-            if (newDates.length > allowedDates.length) {
-                let newDate = getDifference(newDates, allowedDates)[0];
-                setAllowedDates(dates => [...dates, newDate])
+            if (newDates.length > calendarAllowedDates.length) {
+                let newDate = getDifference(newDates, calendarAllowedDates)[0];
+                setCalendarAllowedDates(dates => [...dates, newDate])
                 dateService.addDate(jwt, { date: newDate.format(), eventId: event.id });
             } else {
-                let removedDate = getDifference(allowedDates, newDates)[0]
-                setAllowedDates(dates => dates.filter((date: DateObject) => date.toUnix() !== removedDate.toUnix()))
+                let removedDate = getDifference(calendarAllowedDates, newDates)[0]
+                setCalendarAllowedDates(dates => dates.filter((date: DateObject) => date.toUnix() !== removedDate.toUnix()))
                 dateService.removeDate(jwt, { date: removedDate.format(), eventId: event.id })
             }
         } else {
-            if (newDates.length > pickedDates.length) {
-                let newDate = getDifference(newDates, pickedDates)[0];
-                setPickedDates(dates => [...dates, newDate])
+
+            if (newDates.length > calendarPickedDates.length) {
+                console.log("Adding date");
+                let newDate = getDifference(newDates, calendarPickedDates)[0];
+                console.log(newDate)
+                setCalendarPickedDates((dates: DateObject[]) => [...dates, newDate])
                 // addDate(jwt, {date: newDate.format(), eventId: event.id});
                 dateService.pickDate(jwt, { date: newDate.format(), eventId: event.id })
             } else {
-                let removedDate = getDifference(pickedDates, newDates)[0];
-                setPickedDates(dates => dates.filter((date: DateObject) => date.toUnix() !== removedDate.toUnix() ))
+                console.log("Removing date")
+                let removedDate = getDifference(calendarPickedDates, newDates)[0];
+                setCalendarPickedDates((dates: DateObject[]) => dates.filter((date: DateObject) => date.toUnix() !== removedDate.toUnix() ))
                 dateService.unpickDate(jwt, { date: removedDate.format(), eventId: event.id })
             }
+
         }
     }
 
@@ -75,7 +76,7 @@ export const Calendar = () => {
 
     return (
         <DatePicker
-            value={event.isOwner ? allowedDates : pickedDates}
+            value={event.isOwner ? calendarAllowedDates : calendarPickedDates}
             multiple
             fullYear={false}
             numberOfMonths={3}
@@ -102,7 +103,10 @@ export const Calendar = () => {
                 }
 
                 if(!event.isOwner) {
-                    const inDates = allowedDates.some(d => {
+                    const inDates = calendarAllowedDates.some(d => {
+                        return date.year === d.year && date.month.number === d.month.number && date.day === d.day
+                    })
+                    const pickedDate = calendarPickedDates.some(d => {
                         return date.year === d.year && date.month.number === d.month.number && date.day === d.day
                     })
                     // console.log(inDates)
@@ -110,7 +114,9 @@ export const Calendar = () => {
                         disabled = true;
                         style.fontWeight = 'normal';
                     } else {
-                        style.border = '1px solid green'
+                        if (!pickedDate) {
+                            style.border = '1px solid green'
+                        }
                     }
                 }
 

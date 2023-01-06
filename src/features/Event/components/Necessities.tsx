@@ -22,16 +22,8 @@ const Button = styled.button`
 
 export const Necessities = () => {
     const [title, setTitle] = useState("");
-    const [necessities, setNecessities] = useState<Necessity[]>([]);
-    const { event } = useContext(EventContext);
+    const { event, necessities, setNecessities } = useContext(EventContext);
     const { jwt, userId } = useContext(AuthContext);
-
-    useEffect(() => {
-        if(event) {
-            setNecessities(event.necessities);
-        }
-    }, [event]);
-
 
     const handleSubmit = async (e: Event) => {
         e.preventDefault();
@@ -46,7 +38,7 @@ export const Necessities = () => {
             let necessity = await necessityService.addNecessity(jwt, data);
 
             if(necessity){
-                setNecessities(necessities => [...necessities, necessity])
+                // setNecessities((necessities: Necessity[]) => [...necessities, necessity])
             }
         }
     }
@@ -57,7 +49,7 @@ export const Necessities = () => {
         if(!id) return;
 
         if(jwt) necessityService.removeNecessity(jwt, id).then(() => {
-            setNecessities(necessities => necessities.filter(necessity => necessity.id !== id))
+            // setNecessities((necessities: Necessity[]) => necessities.filter(necessity => necessity.id !== id))
         });
     }
 
@@ -68,7 +60,7 @@ export const Necessities = () => {
             : necessities.map((necessity: Necessity) => (
                 <p key={necessity.id}>
                     {necessity.name}
-                    {event.isOwner || necessity.creator.id === userId && (
+                    {(event.isOwner || necessity.creator.id === userId) && (
                         <button data-id={necessity.id} onClick={handleRemove as any}>x</button>
                     )}
                 </p>

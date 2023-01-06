@@ -11,13 +11,18 @@ import {Layout} from "../layouts/Layout";
 import {LoadingContext} from "../context/LoadingContext";
 import {GridCell, GridContainer} from "../assets/styles/Containers";
 import {PickedDates} from "../features/Event/components/PickedDates";
+import socketIOClient from "socket.io-client";
+import {DateObject} from "react-multi-date-picker";
+import User from "../types/User";
+import Necessity from "../types/Necessity";
 
 export default function Event() {
     const { identifier = '' } = useParams()
-    const { jwt, userId } = useContext(AuthContext);
-    const { event, setEvent } = useContext(EventContext);
+    const { jwt, userId, displayName } = useContext(AuthContext);
+    const { event, setEvent, setAllPickedDates, setAllowedDates, setNecessities } = useContext(EventContext);
     const { loading, setLoading } = useContext(LoadingContext);
 
+    // Get event if we don't have it yet.
     useEffect(() => {
         setLoading(true);
         if(!event || event.identifier !== identifier) {
@@ -39,6 +44,63 @@ export default function Event() {
         }
         setLoading(false);
     }, [jwt]);
+
+    useEffect(() => {
+        if(event) {
+            const socket = socketIOClient('localhost:8081', {
+                extraHeaders: {
+                    Authorization: 'Bearer ' + jwt,
+                    User: displayName,
+                    'X-room': event.identifier
+                }
+            });
+
+            socket.on('connect', () => {
+                console.log("Socket connected")
+            });
+
+            socket.on('disconnect', () => {
+                console.log("Socket Disconnected")
+            });
+
+            socket.on('message', () => {
+                console.log("Pong received")
+            });
+
+            socket.on('date_picked', (date) => {
+                setAllPickedDates((dates: Array<{ user: User, date: string}>) => [...dates, date])
+            });
+
+            socket.on('date_unpicked', (date) => {
+                setAllPickedDates((dates: Array<{ user: User, date: string}>) =>
+                    dates.filter((d) =>
+                        !(d.date === date.date && d.user.username === date.user.username) ));
+            });
+
+            socket.on('date_added', (date) => {
+                setAllowedDates((dates: Array<string>) => [...dates, date])
+            });
+
+            socket.on('date_removed', (date) => {
+                setAllowedDates((dates: Array<string>) => dates.filter(d => d !== date))
+            });
+
+            socket.on('necessity_added', (necessity) => {
+                setNecessities((necessities: Array<Necessity>) => [...necessities, necessity])
+            });
+
+            socket.on('necessity_removed', (necessity) => {
+                setNecessities((necessities: Array<Necessity>) => necessities.filter(n => n.id !== necessity))
+            });
+
+            return () => {
+                socket.off('connect');
+                socket.off('disconnect');
+                socket.off('pong');
+                socket.close();
+            };
+        }
+    }, [event])
 
     return (
         <Layout>
