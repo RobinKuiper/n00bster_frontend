@@ -1,9 +1,9 @@
 import User from "./User";
 
-interface Date {
+interface DateResponse {
     id: number;
     date: string;
     members: User[];
 }
 
-export default Date;
+export default DateResponse;

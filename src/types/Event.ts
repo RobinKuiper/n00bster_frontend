@@ -1,17 +1,16 @@
 import Necessity from "./Necessity";
 import User from "./User";
-import Date from "./Date";
+import DateResponse from "./DateResponse";
 
 interface Event {
     title: string;
     description: string;
     id: number;
-    endDate: object;
-    startDate: object;
     identifier: string;
     members: [];
     necessities: Necessity[];
-    dates: Date[];
+    dates: DateResponse[];
+    pickedDates: DateResponse[];
     owner: User;
     isOwner: boolean;
 }

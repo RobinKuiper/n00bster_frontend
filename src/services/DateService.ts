@@ -26,9 +26,12 @@ const DateService = {
         });
     },
 
+    getUsersPickedDates: async (jwt: string, eventId: number) => {
+        return await getRequest('/date/user/' + eventId, jwt)
+    },
 
-    getPickedDates: async (jwt: string, eventId: number) => {
-        return await getRequest('/date/get/' + eventId, jwt)
+    getAllPickedDates: async (jwt: string, eventId: number) => {
+        return await getRequest('/date/all/' + eventId, jwt)
     }
 }
 

@@ -15,10 +15,11 @@ type GridContainerProps = {
 }
 const GridContainer = styled.div<GridContainerProps>`
     display: grid;
-    grid-template-columns: ${props => props.columns ?? '2.5fr repeat(2, 1fr)'};
-    grid-template-rows: ${props => props.rows ?? '1fr 1.5fr'};
+    grid-template-columns: ${props => props.columns ?? 'repeat(3, 1fr)'};
+    grid-template-rows: ${props => props.rows ?? 'repeat(3, 1fr)'};
     grid-column-gap: ${props => props.columnGap ?? 0};
     grid-row-gap: ${props => props.rowGap ?? 0};
+    grid-gap: 0;
 `
 type GridCellProps = {
     area: string;

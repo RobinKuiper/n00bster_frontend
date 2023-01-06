@@ -10,6 +10,7 @@ import { Members } from "../features/Event/components/Members";
 import {Layout} from "../layouts/Layout";
 import {LoadingContext} from "../context/LoadingContext";
 import {GridCell, GridContainer} from "../assets/styles/Containers";
+import {PickedDates} from "../features/Event/components/PickedDates";
 
 export default function Event() {
     const { identifier = '' } = useParams()
@@ -54,6 +55,9 @@ export default function Event() {
                     </GridCell>
                     <GridCell area='2 / 3 / 3 / 4'>
                         <Members />
+                    </GridCell>
+                    <GridCell area='3 / 1 / 4 / 2'>
+                        <PickedDates />
                     </GridCell>
                 </GridContainer>
             ) : (

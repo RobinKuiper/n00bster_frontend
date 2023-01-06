@@ -9,7 +9,8 @@ import {useContext, useEffect, useState} from "react";
 import dateService from "../../../services/DateService";
 import {AuthContext} from "../../../context/AuthContext";
 import {EventContext} from "../../../context/EventContext";
-import Date from '../../../types/Date';
+import DateResponse from '../../../types/DateResponse';
+import PickedDate from "../../../types/PickedDate";
 
 function getDifference(array1: DateObject[], array2: DateObject[]) {
     return array1.filter(object1 => {
@@ -35,8 +36,8 @@ export const Calendar = () => {
 
     useEffect(() => {
         if(!event?.isOwner && jwt && event) {
-            dateService.getPickedDates(jwt, event.id).then(dates => {
-                setPickedDates(dates.map((date: Date) => {
+            dateService.getUsersPickedDates(jwt, event.id).then(dates => {
+                setPickedDates(dates.map((date: DateResponse) => {
                     return new DateObject(date.date);
                 }));
             })
