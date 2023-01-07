@@ -12,7 +12,11 @@ const ListItem = styled(Link)`
   padding: 15px 10px 15px 10px;
 
   &:hover {
-    background-color: lightgrey;
+    background-color: #f1f1f1;
+  }
+  
+  &:last-child {
+    border-bottom: none;
   }
 `;
 

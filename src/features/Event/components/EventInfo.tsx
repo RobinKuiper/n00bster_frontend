@@ -10,7 +10,10 @@ export const EventInfo = () => {
 
     useEffect(() => {
         // @ts-ignore
-        event?.members.push(event.owner)
+        if (!event.members.includes(event.owner)) {
+            // @ts-ignore
+            event?.members.push(event.owner)
+        }
     }, [event]);
 
 

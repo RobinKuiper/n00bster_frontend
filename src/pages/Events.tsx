@@ -7,7 +7,7 @@ import {GridCell, GridContainer} from "../assets/styles/Containers";
 import {CreateEvent} from "../features/Event/components/CreateEvent";
 import styled from "styled-components";
 import {EventListItem} from "../features/Event/components/EventListItem";
-import {List} from "../layouts/Components/StyledComponents";
+import {List, Panel} from "../layouts/Components/StyledComponents";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -15,9 +15,9 @@ const Container = styled.div`
 `
 
 const GridCellStyled = styled(GridCell)`
-  background-color: #f1f1f1;
-  border-radius: 5px;
-  box-shadow: 2px 2px 3px #000;
+  //background-color: #fff;
+  //border-radius: 5px;
+  //box-shadow: 2px 2px 3px #000;
 `
 
 export default function Events() {
@@ -38,20 +38,32 @@ export default function Events() {
             <Container>
                 <GridContainer columnGap='50px' columns='repeat(2, 1fr)' rows='repeat(2, 1fr)'>
                     <GridCellStyled area='1 / 1 / 2 / 2'>
-                        <h3>Events</h3>
-                        <List>
-                            {events.map(event => (
-                                <EventListItem event={event} />
-                            ))}
-                        </List>
+                        <Panel>
+                            <h4>Events</h4>
+                            {events.length > 0 ? (
+                                <List>
+                                    {events.map(event => (
+                                        <EventListItem key={event.id} event={event} />
+                                    ))}
+                                </List>
+                            ) : (
+                                <p>You are not part of any events.</p>
+                            )}
+                        </Panel>
                     </GridCellStyled>
                     <GridCellStyled area='1 / 2 / 2 / 3'>
-                        <h3>Owned Events</h3>
-                        <List>
-                            {ownedEvents.map(event => (
-                                <EventListItem event={event} />
-                            ))}
-                        </List>
+                        <Panel>
+                            <h4>Owned Events</h4>
+                            {ownedEvents.length > 0 ? (
+                                <List>
+                                    {ownedEvents.map(event => (
+                                        <EventListItem key={event.id} event={event} />
+                                    ))}
+                                </List>
+                            ) : (
+                                <p>You can create an event below.</p>
+                            )}
+                        </Panel>
                     </GridCellStyled>
                     <GridCell area='2 / 1 / 3 / 3'>
                         <CreateEvent />
