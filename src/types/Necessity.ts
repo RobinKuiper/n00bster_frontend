@@ -5,6 +5,7 @@ interface Necessity {
     amount: number;
     id: number;
     creator: User;
+    members: User[];
 }
 
 export default Necessity;

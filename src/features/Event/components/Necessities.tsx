@@ -9,6 +9,8 @@ import Necessity from "../../../types/Necessity";
 import {NecessityListItem} from "./NecessityListItem";
 import {Flex, Panel} from "../../../layouts/Components/StyledComponents";
 import {Loader} from "../../../layouts/Components/Loader";
+import {Tooltip} from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 const NecessityItemContainer = styled(Flex)`
     overflow: hidden;
@@ -25,11 +27,14 @@ const NecessityItemContainer = styled(Flex)`
     }
 `
 
-const Input = styled.input`
+type InputProps = {
+    width?: string;
+}
+const Input = styled.input<InputProps>`
   padding: 5px;
   border-radius: 4px 0 0 4px;
   border: 1px solid lightgray;
-  width: 100%;
+  width: ${props => props.width ?? '100%'};
 `
 
 const Button = styled.button`
@@ -40,6 +45,7 @@ const Button = styled.button`
 
 export const Necessities = () => {
     const [title, setTitle] = useState("");
+    const [amount, setAmount] = useState<number>();
     const [loading, setLoading] = useState(true);
     const { event, necessities } = useContext(EventContext);
     const { jwt } = useContext(AuthContext);
@@ -58,7 +64,7 @@ export const Necessities = () => {
             let data = {
                 name: title,
                 eventId: event.id,
-                amount: 1
+                amount: amount ?? 1
             }
 
             await necessityService.addNecessity(jwt, data);
@@ -81,6 +87,13 @@ export const Necessities = () => {
                         <form onSubmit={handleSubmit as any}>
                             <Flex direction={'row'}>
                                 <Input type='text' name='name' placeholder='New Necessity' value={title} onChange={(e) => setTitle(e.target.value)} />
+                                <Input id='amountInputField' type='number' name='amount' placeholder='Amount' value={amount} width='20%' onChange={(e) => setAmount(parseInt(e.target.value))} />
+                                <Tooltip
+                                    anchorId={'amountInputField'}
+                                    place='top'
+                                    variant='info'
+                                    content='-1 for infinity'
+                                />
                                 <Button type='submit'>+</Button>
                             </Flex>
                         </form>

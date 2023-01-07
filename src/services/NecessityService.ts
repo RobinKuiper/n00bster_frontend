@@ -12,6 +12,18 @@ const NecessityService = {
             console.log("ERR", err)
         });
     },
+
+    pickNecessity: async (jwt: string, data: { necessityId: number }) => {
+        return await postRequest('/necessity/pick', jwt, data).catch(err => {
+            console.log("ERR", err)
+        });
+    },
+
+    unpickNecessity: async (jwt: string, data: { necessityId: number }) => {
+        return await postRequest('/necessity/unpick', jwt, data).catch(err => {
+            console.log("ERR", err)
+        });
+    },
 }
 
 export default NecessityService;

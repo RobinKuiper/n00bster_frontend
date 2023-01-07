@@ -97,6 +97,10 @@ export default function Event() {
                 setNecessities((necessities: Array<Necessity>) => necessities.filter(n => n.id !== necessity))
             });
 
+            socket.on('necessity_picked', updateNecessities);
+
+            socket.on('necessity_unpicked', updateNecessities);
+
             return () => {
                 socket.off('connect');
                 socket.off('disconnect');
@@ -106,9 +110,22 @@ export default function Event() {
         }
     }, [event])
 
+    const updateNecessities = (newNecessity: Necessity) => {
+        console.log("Updating necessities")
+        console.log(newNecessity)
+        setNecessities((necessities: Necessity[]) => necessities.map((n: Necessity) => {
+            if (newNecessity.id === n.id) {
+                console.log("replacing")
+                return newNecessity;
+            }
+            return n;
+        }));
+    }
+
     return (
         <Layout>
-            { allowedDates.length === 0 && <Notification type={'warning'}>Do not forget to pick some dates that other people can choose from.</Notification> }
+            { event?.isOwner && allowedDates.length === 0 && <Notification type={'warning'}>Do not forget to pick some dates where other people can choose from.</Notification> }
+            { !event?.isOwner && allowedDates.length === 0 && <Notification type={'info'}>{event?.owner.displayName} has not allowed any dates to be picked yet.</Notification> }
             {!loading && event ? (
                 <GridContainer columns={'auto minmax(0, 1fr)'} rows={'auto auto minmax(0, 1fr)'}>
                     <GridCell area='1 / 1 / 1 / 3' border='none'>

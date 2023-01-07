@@ -5,6 +5,7 @@ interface CheckboxProps {
     className?: string;
     checked: boolean;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    disabled?: boolean;
 }
 
 const CheckboxContainer = styled.label`
@@ -61,9 +62,9 @@ const CheckboxContainer = styled.label`
   }
 `;
 
-const Checkbox: React.FC<CheckboxProps> = ({ className, checked, onChange }) => (
+const Checkbox: React.FC<CheckboxProps> = ({ className, checked, onChange, disabled = false }) => (
     <CheckboxContainer className={className}>
-        <input type="checkbox" onChange={onChange} checked={checked} />
+        <input type="checkbox" onChange={onChange} checked={checked} disabled={disabled} />
         <span className="checkmark"></span>
     </CheckboxContainer>
 );

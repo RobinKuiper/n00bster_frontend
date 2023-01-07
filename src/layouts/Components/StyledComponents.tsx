@@ -62,13 +62,13 @@ type NotificationProps = {
 }
 export const Notification = styled.div<NotificationProps>`
   background: ${props =>
-    props.type === 'info' ? 'lightcoral'
+    props.type === 'info' ? 'lightskyblue'
         : props.type === 'warning' ? 'lightsalmon'
             : props.type === 'error' ? 'lightcoral'
                 : props.type === 'success' ? 'lightcoral'
                     : 'lightcoral'};
   border: 1px solid ${props =>
-    props.type === 'info' ? 'lightcoral'
+    props.type === 'info' ? '#44b1e0'
         : props.type === 'warning' ? '#e56262'
             : props.type === 'error' ? '#f88d61'
                 : props.type === 'success' ? 'lightcoral'
