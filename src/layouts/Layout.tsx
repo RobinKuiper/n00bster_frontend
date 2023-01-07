@@ -2,8 +2,29 @@
 import * as React from 'react';
 import styled from "styled-components";
 import {Link} from "react-router-dom";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {AuthContext} from "../context/AuthContext";
+import Modal from "react-modal";
+import {AuthForms} from "../features/Auth/AuthForms";
+
+Modal.setAppElement('#root');
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        // marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        backgroundColor: '#24333C',
+        border: '1px solid #19242a',
+        boxShadow: '0 4px 10px 4px rgba(19,35,47,0.6)'
+    },
+    overlay: {
+        backgroundColor: 'rgba(47,45,45,0.68)'
+    },
+};
 
 const Container = styled.div`
 
@@ -52,17 +73,6 @@ const LogoutButton = styled.button`
   }
 `;
 
-const LinkButton = styled(Link)`
-  background: none;
-  border: none;
-  color: white;
-  font-size: 14px;
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
 const Content = styled.div`
   padding-top: 20px;
 `
@@ -83,6 +93,11 @@ type Props = {
 };
 export const Layout = ({children}: Props) => {
     const { isLoggedIn, logout, displayName } = useContext(AuthContext);
+    const [isOpen, setIsOpen] = useState(false)
+
+    function closeModal() {
+        setIsOpen(false);
+    }
 
     return (
         <Container>
@@ -100,7 +115,7 @@ export const Layout = ({children}: Props) => {
                     </div>
                 ) : (
                     <div>
-                        <LinkButton to='/login'>Login</LinkButton>
+                        <button onClick={() => setIsOpen(true)}>Login</button>
                     </div>
                 )}
             </TopBar>
@@ -108,6 +123,15 @@ export const Layout = ({children}: Props) => {
             <Content>
                 {children}
             </Content>
+
+            <Modal
+                isOpen={isOpen}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+            >
+                <AuthForms closeModal={closeModal} />
+            </Modal>
         </Container>
     );
 };
