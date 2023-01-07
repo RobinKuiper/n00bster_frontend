@@ -72,28 +72,30 @@ export const NecessityListItem = ({ necessity, event }: Props) => {
 
     return (
         <table>
-            <tr>
-                <td style={{ width: '45%', textDecoration: completed ? 'line-through' : ''}}>
-                    <Checkbox checked={checked} onChange={handleChange} disabled={!hasNecessity && completed} />
-                    <span>{necessity.name} </span>
-                    {necessity.amount === -1 && <CgInfinity style={{ display: 'inline' }} />}
-                    {necessity.amount > 1 && (
-                        <sup>({necessity.members.length}/{necessity.amount})</sup>
-                    )}
-                </td>
-                <td style={{ width: '45%'}}>
-                    <Avatars>
-                        {necessity.members.map((member) => (
-                            <span key={member.id}><Avatar user={member} /></span>
-                        ))}
-                    </Avatars>
-                </td>
-                <td style={{ width: '10%'}}>
-                    {(event.isOwner || necessity.creator.id === userId) && (
-                        <Button data-id={necessity.id} onClick={handleRemove as any}><FaTrash /></Button>
-                    )}
-                </td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td style={{ width: '45%', textDecoration: completed ? 'line-through' : ''}}>
+                        <Checkbox checked={checked} onChange={handleChange} disabled={!hasNecessity && completed} />
+                        <span>{necessity.name} </span>
+                        {necessity.amount === -1 && <CgInfinity style={{ display: 'inline' }} />}
+                        {necessity.amount > 1 && (
+                            <sup>({necessity.members.length}/{necessity.amount})</sup>
+                        )}
+                    </td>
+                    <td style={{ width: '45%'}}>
+                        <Avatars>
+                            {necessity.members.map((member) => (
+                                <span key={member.id}><Avatar user={member} /></span>
+                            ))}
+                        </Avatars>
+                    </td>
+                    <td style={{ width: '10%'}}>
+                        {(event.isOwner || necessity.creator.id === userId) && (
+                            <Button data-id={necessity.id} onClick={handleRemove as any}><FaTrash /></Button>
+                        )}
+                    </td>
+                </tr>
+            </tbody>
         </table>
     );
 };
