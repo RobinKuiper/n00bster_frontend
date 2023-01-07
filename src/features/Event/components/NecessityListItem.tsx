@@ -8,19 +8,13 @@ import necessityService from "../../../services/NecessityService";
 import {AuthContext} from "../../../context/AuthContext";
 import {useContext, useEffect, useState} from "react";
 import Checkbox from "../../../layouts/Components/Checkbox";
-import {Avatar} from "../../../layouts/Components/Avatar";
 import {CgInfinity} from "react-icons/cg";
+import {AvatarList} from "../../../layouts/Components/AvatarList";
 
 const Button = styled.button`
   background: none;
   color: lightcoral;
   border: none;
-`
-
-const Avatars = styled.div`
-  > * {
-    margin-right: -15px;
-  }
 `
 
 type Props = {
@@ -83,11 +77,7 @@ export const NecessityListItem = ({ necessity, event }: Props) => {
                         )}
                     </td>
                     <td style={{ width: '45%'}}>
-                        <Avatars>
-                            {necessity.members.map((member) => (
-                                <span key={member.id}><Avatar user={member} /></span>
-                            ))}
-                        </Avatars>
+                        <AvatarList marginRight={'-15px'} members={necessity.members} />
                     </td>
                     <td style={{ width: '10%'}}>
                         {(event.isOwner || necessity.creator.id === userId) && (

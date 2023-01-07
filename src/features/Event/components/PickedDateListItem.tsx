@@ -3,7 +3,7 @@ import * as React from 'react';
 import styled from "styled-components";
 import {Flex, ListItem} from "../../../layouts/Components/StyledComponents";
 import User from "../../../types/User";
-import {Avatar} from "../../../layouts/Components/Avatar";
+import {AvatarList} from "../../../layouts/Components/AvatarList";
 
 const Date = styled(Flex)<{ color: string; }>`
   font-weight: 700;
@@ -16,12 +16,6 @@ const Date = styled(Flex)<{ color: string; }>`
     border-radius: 50%;
     margin-right: 5px;
     background: ${props => props.color};
-  }
-`
-
-const Avatars = styled.div`
-  > * {
-    margin-right: -10px;
   }
 `
 
@@ -40,11 +34,7 @@ export const PickedDateListItem = ({ date, votes, color }: Props) => {
                 <div></div>
                 {date} ({votes.length})
             </Date>
-            <Avatars>
-                { votes.map((vote) => (
-                    <span key={vote.user.id}><Avatar user={vote.user} /></span>
-                ))}
-            </Avatars>
+            <AvatarList marginRight={'-10px'} members={votes} userKey='user' />
         </ListItem>
     );
 };

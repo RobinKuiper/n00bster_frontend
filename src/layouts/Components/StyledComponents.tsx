@@ -7,6 +7,7 @@ type FlexProps = {
     alignContent?:  string;
     alignItems?:    string;
     border?:        string;
+    gap?:           string;
 }
 export const Flex = styled.div<FlexProps>`
   display:          flex;
@@ -16,6 +17,7 @@ export const Flex = styled.div<FlexProps>`
   align-items:      ${props => props.alignItems ?? 'flex-start'};
   justify-content:  ${props => props.justifyContent ?? 'flex-start'};
   border:           ${props => props.border ?? 'none'};
+  gap:              ${props => props.gap ?? '0'};
 `
 
 export const ListItem = styled.li`
