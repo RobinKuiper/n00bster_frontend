@@ -6,26 +6,29 @@ import {useParams} from "react-router-dom";
 import {Calendar} from "../features/Event/components/Calendar";
 import {EventInfo} from "../features/Event/components/EventInfo";
 import {Necessities} from "../features/Event/components/Necessities";
-import { Members } from "../features/Event/components/Members";
 import {Layout} from "../layouts/Layout";
 import {LoadingContext} from "../context/LoadingContext";
 import {GridCell, GridContainer} from "../assets/styles/Containers";
 import {PickedDates} from "../features/Event/components/PickedDates";
 import socketIOClient from "socket.io-client";
-import {DateObject} from "react-multi-date-picker";
 import User from "../types/User";
 import Necessity from "../types/Necessity";
+import {Loader} from "../layouts/Components/Loader";
 
 export default function Event() {
     const { identifier = '' } = useParams()
     const { jwt, userId, displayName } = useContext(AuthContext);
-    const { event, setEvent, setAllPickedDates, setAllowedDates, setNecessities } = useContext(EventContext);
+    const { event, setEvent, setAllPickedDates, setAllowedDates, setNecessities, setUsersPickedDates } = useContext(EventContext);
     const { loading, setLoading } = useContext(LoadingContext);
 
     // Get event if we don't have it yet.
     useEffect(() => {
-        setLoading(true);
         if(!event || event.identifier !== identifier) {
+            setLoading(true);
+            setAllPickedDates([])
+            setAllowedDates([])
+            setNecessities([])
+            setUsersPickedDates([])
             if(jwt) {
                 eventService.getEvent(jwt, identifier).then(event => {
                     if(event){
@@ -42,8 +45,8 @@ export default function Event() {
                 }).catch((err) => console.log(err));
             }
         }
-        setLoading(false);
-    }, [jwt]);
+        // @ts-ignore
+    }, [identifier, jwt]);
 
     useEffect(() => {
         if(event) {
@@ -105,25 +108,25 @@ export default function Event() {
     return (
         <Layout>
             {!loading && event ? (
-                <GridContainer>
-                    <GridCell area='1 / 1 / 3 / 2'>
-                        <Calendar />
-                    </GridCell>
-                    <GridCell area='1 / 2 / 2 / 4'>
+                <GridContainer columns={'auto minmax(0, 1fr)'} rows={'auto auto minmax(0, 1fr)'}>
+                    <GridCell area='1 / 1 / 1 / 3' border='none'>
                         <EventInfo />
                     </GridCell>
-                    <GridCell area='2 / 2 / 3 / 3'>
+                    <GridCell area='2 / 1 / 3 / 2' smallArea='2 / 1 / 2 / 4' border='none'>
+                        <Calendar />
+                    </GridCell>
+                    <GridCell area='2 / 2 / 4 / 3' smallArea='3 / 1 / 3 / 4' border='none'>
                         <Necessities />
                     </GridCell>
-                    <GridCell area='2 / 3 / 3 / 4'>
-                        <Members />
-                    </GridCell>
-                    <GridCell area='3 / 1 / 4 / 2'>
+                    {/*<GridCell area='2 / 3 / 4 / 4' smallArea='4 / 1 / 4 / 4' border='none'>*/}
+                    {/*    <Members />*/}
+                    {/*</GridCell>*/}
+                    <GridCell area='3 / 1 / 4 / 2' smallArea='5 / 1 / 5 / 4' border='none'>
                         <PickedDates />
                     </GridCell>
                 </GridContainer>
             ) : (
-                  <h1>Loading...</h1>
+                  <Loader />
             )}
         </Layout>
     );

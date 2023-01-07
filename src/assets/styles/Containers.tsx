@@ -4,7 +4,8 @@ const FullCentered = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
 `
 
 type GridContainerProps = {
@@ -23,11 +24,19 @@ const GridContainer = styled.div<GridContainerProps>`
 `
 type GridCellProps = {
     area: string;
+    smallArea?: string;
     padding?: string;
+    border?: string;
 }
 const GridCell = styled.div<GridCellProps>`
   grid-area: ${props => props.area};
   padding: ${props => props.padding ?? '10px'};
+  border: ${props => props.border ?? 'none' };
+  min-height: 0;
+
+  @media (max-width: 1300px) {
+    grid-area: ${props => props.smallArea ?? props.area};
+  }
 `
 
 export { FullCentered, GridContainer, GridCell }

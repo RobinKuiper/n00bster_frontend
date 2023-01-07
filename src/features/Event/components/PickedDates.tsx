@@ -1,34 +1,18 @@
 // @flow 
 import * as React from 'react';
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import dateService from "../../../services/DateService";
 import {AuthContext} from "../../../context/AuthContext";
 import {EventContext} from "../../../context/EventContext";
-import {countBy, Dictionary, groupBy, max, sortBy} from "lodash";
 import User from "../../../types/User";
-import styled from "styled-components";
-import {DateObject} from "react-multi-date-picker";
+import {List, Panel} from "../../../layouts/Components/StyledComponents";
+import {Loader} from "../../../layouts/Components/Loader";
+import {useParams} from "react-router-dom";
+import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
+import {Doughnut, getElementAtEvent} from "react-chartjs-2";
+import {PickedDateListItem} from "./PickedDateListItem";
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  align-items: flex-start;
-
-  > * + * {
-    margin-top: 20px;
-  }
-`
-
-const Table = styled.table`
-  width: 100%;
-  
-  th{
-    text-align: left;
-  }
-`
+ChartJS.register(ArcElement, Tooltip);
 
 interface ObjectType {
     user: User,
@@ -47,21 +31,24 @@ function group(objectArray: Array<{ user: User, date: string }>): { [key: string
     }, {});
 }
 
-type Props = {
-    
-};
-export const PickedDates = (props: Props) => {
+export const PickedDates = () => {
+    const chartRef = useRef();
+    const { identifier = '' } = useParams()
     const [groupedPickedDates, setGroupedPickedDates] = useState<{ [key: string]: ObjectType[]; }>({});
     const {jwt} = useContext(AuthContext);
     const {event, allPickedDates, setAllPickedDates} = useContext(EventContext);
+    // const [topDate, setTopDate] = useState<JSX.Element>(<></>)
+    const [loading] = useState(false)
+    const [chartLabels, setChartLabels] = useState<string[]>([])
+    const [chartVotes, setChartVotes] = useState<number[]>([])
 
     useEffect(() => {
-        if(event && jwt) {
+        if(event && jwt && event.identifier !== identifier) {
             dateService.getAllPickedDates(jwt, event.id).then(dates => {
                 setAllPickedDates(dates)
             })
         }
-    }, [event])
+    }, [identifier])
 
     useEffect(() => {
         const grouped = group(allPickedDates);
@@ -70,38 +57,151 @@ export const PickedDates = (props: Props) => {
             (a, b) =>
                 b[1].length - a[1].length)
 
+        // setChartLabels(Object.keys(grouped))
+        // setChartVotes(Object.values(grouped).map(value => value.length))
+
+        const chartLabels: Array<string> = []
+        const chartVotes: Array<number> = []
+        sorted.forEach((o) => {
+            chartLabels.push(o[0])
+            chartVotes.push(o[1].length)
+        })
+        setChartLabels(chartLabels)
+        setChartVotes(chartVotes)
+
         setGroupedPickedDates(Object.fromEntries(sorted));
     }, [allPickedDates]);
 
+    // useEffect(() => {
+    //     const dates = Object.keys(groupedPickedDates);
+    //     if (
+    //         dates.length > 0
+    //         && (dates.length === 1
+    //             || dates[0].length > dates[1].length)
+    //     ) {
+    //         setTopDate(<DateLabel>{dates[0]}</DateLabel>)
+    //         return;
+    //     }
+    //     setTopDate(<></>)
+    // }, [groupedPickedDates]);
+
+    const colors = [
+        'rgba(255, 0, 0, 0.2)',
+        'rgba(0, 255, 0, 0.2)',
+        'rgba(0, 0, 255, 0.2)',
+        'rgba(255, 255, 0, 0.2)',
+        'rgba(255, 0, 255, 0.2)',
+        'rgba(0, 255, 255, 0.2)',
+        'rgba(255, 128, 0, 0.2)',
+        'rgba(255, 0, 128, 0.2)',
+        'rgba(128, 255, 0, 0.2)',
+        'rgba(0, 255, 128, 0.2)',
+        'rgba(128, 0, 255, 0.2)',
+        'rgba(0, 128, 255, 0.2)',
+        'rgba(128, 128, 0, 0.2)',
+        'rgba(128, 0, 128, 0.2)',
+        'rgba(0, 128, 128, 0.2)',
+        'rgba(128, 128, 128, 0.2)',
+        'rgba(255, 128, 128, 0.2)',
+        'rgba(128, 255, 128, 0.2)',
+        'rgba(128, 128, 255, 0.2)',
+        'rgba(255, 255, 128, 0.2)',
+        'rgba(255, 128, 255, 0.2)',
+        'rgba(128, 255, 255, 0.2)',
+        'rgba(0, 0, 0, 0.2)',
+        'rgba(128, 128, 128, 0.2)',
+        'rgba(255, 255, 255, 0.2)',
+        'rgba(255, 0, 0, 0.2)',
+        'rgba(0, 255, 0, 0.2)',
+        'rgba(0, 0, 255, 0.2)',
+        'rgba(255, 255, 0, 0.2)',
+        'rgba(255, 0, 255, 0.2)',
+    ]
+
+    const textColors = colors.map(color => color.replace('0.2', '1'))
+
+    const data = {
+        labels: chartLabels,
+        datasets: [
+            {
+                label: '# of Picks',
+                data: chartVotes,
+                backgroundColor: colors,
+                borderColor: [
+                    'rgba(255, 0, 0, 1)',
+                    'rgba(0, 255, 0, 1)',
+                    'rgba(0, 0, 255, 1)',
+                    'rgba(255, 255, 0, 1)',
+                    'rgba(255, 0, 255, 1)',
+                    'rgba(0, 255, 255, 1)',
+                    'rgba(255, 128, 0, 1)',
+                    'rgba(255, 0, 128, 1)',
+                    'rgba(128, 255, 0, 1)',
+                    'rgba(0, 255, 128, 1)',
+                    'rgba(128, 0, 255, 1)',
+                    'rgba(0, 128, 255, 1)',
+                    'rgba(128, 128, 0, 1)',
+                    'rgba(128, 0, 128, 1)',
+                    'rgba(0, 128, 128, 1)',
+                    'rgba(128, 128, 128, 1)',
+                    'rgba(255, 128, 128, 1)',
+                    'rgba(128, 255, 128, 1)',
+                    'rgba(128, 128, 255, 1)',
+                    'rgba(255, 255, 128, 1)',
+                    'rgba(255, 128, 255, 1)',
+                    'rgba(128, 255, 255, 1)',
+                    'rgba(0, 0, 0, 1)',
+                    'rgba(128, 128, 128, 1)',
+                    'rgba(255, 255, 255, 1)',
+                    'rgba(255, 0, 0, 1)',
+                    'rgba(0, 255, 0, 1)',
+                    'rgba(0, 0, 255, 1)',
+                    'rgba(255, 255, 0, 1)',
+                    'rgba(255, 0, 255, 1)',
+                ],
+                borderWidth: 1,
+                hoverOffset: -5,
+                // hoverBackgroundColor: 'gray',
+                // offset: 0,
+                // weight: 1.5
+            },
+        ],
+    };
+
+    const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        // @ts-ignore
+        console.log(getElementAtEvent(chartRef.current, e))
+    }
 
     return (
-        <Container>
-            <h5>Picked Dates</h5>
+        <Panel alignItems={'center'}>
+            {/*<Flex direction={'row'}>*/}
+            {/*    <h4>Picked Dates</h4>*/}
+            {/*    {topDate}*/}
+            {/*</Flex>*/}
 
-            <div>Best date so far: <span>{Object.keys(groupedPickedDates)[0]}</span></div>
+            {!loading ? (
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gridAutoRows: '1fr' }}>
+                    <div style={{ margin: '0 auto', width: '80%' }}>
+                        <Doughnut
+                            ref={chartRef}
+                            data={data}
+                            options={{ plugins: { legend: { position: 'bottom' } } }}
+                            onClick={handleClick}
+                        />
+                    </div>
 
-            <Table>
-                <thead>
-                    <tr>
-                       <th>Date</th>
-                       <th>Votes</th>
-                       <th>Members</th>
-                    </tr>
-                </thead>
-                <tbody>
-                { Object.keys(groupedPickedDates).map((key: string) => (
-                    <tr key={key}>
-                        <td>{ key }</td>
-                        <td>{ groupedPickedDates[key].length }</td>
-                        <td>
-                            { groupedPickedDates[key].map((value, id) => (
-                                <span key={id}>{ value.user.displayName }, </span>
-                            ))}
-                        </td>
-                    </tr>
-                )) }
-                </tbody>
-            </Table>
-        </Container>
+                    <div>
+                        <List>
+                            { Object.keys(groupedPickedDates).map((key: string, index) => (
+                                <PickedDateListItem key={index} date={key} votes={groupedPickedDates[key]} color={textColors[index%colors.length]} />
+                            )) }
+                        </List>
+                    </div>
+                </div>
+            ) : (
+                <Loader size={100} />
+            )}
+        </Panel>
     );
 };

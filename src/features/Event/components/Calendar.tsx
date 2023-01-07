@@ -3,14 +3,13 @@ import * as React from 'react';
 import {Calendar as DatePicker, DateObject} from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
 import "react-multi-date-picker/styles/layouts/mobile.css"
-import "react-multi-date-picker/styles/backgrounds/bg-dark.css"
+// import "react-multi-date-picker/styles/backgrounds/bg-dark.css"
 import "react-multi-date-picker/styles/colors/purple.css"
 import {useContext, useEffect, useState} from "react";
 import dateService from "../../../services/DateService";
 import {AuthContext} from "../../../context/AuthContext";
 import {EventContext} from "../../../context/EventContext";
-import DateResponse from '../../../types/DateResponse';
-import PickedDate from "../../../types/PickedDate";
+import { useWindowWidth } from '@react-hook/window-size'
 
 function getDifference(array1: DateObject[], array2: DateObject[]) {
     return array1.filter(object1 => {
@@ -21,10 +20,12 @@ function getDifference(array1: DateObject[], array2: DateObject[]) {
 }
 
 export const Calendar = () => {
+    const width = useWindowWidth();
     const {jwt} = useContext(AuthContext);
     const {event, usersPickedDates, allowedDates} = useContext(EventContext);
     const [calendarAllowedDates, setCalendarAllowedDates] = useState<DateObject[]>([]);
     const [calendarPickedDates, setCalendarPickedDates] = useState<DateObject[]>([]);
+    const [numberOfMonths, setNumberOfMonths] = useState<number>(3);
 
     useEffect(() => {
         if(event) {
@@ -39,6 +40,11 @@ export const Calendar = () => {
             }));
         }
     }, [usersPickedDates]);
+
+    useEffect(() => {
+        setNumberOfMonths(width <= 1000 ? 1 : 3);
+    }, [width]);
+
 
     const handleChange = (newDates: DateObject[]) => {
         if(!event || !jwt) return
@@ -79,14 +85,12 @@ export const Calendar = () => {
             value={event.isOwner ? calendarAllowedDates : calendarPickedDates}
             multiple
             fullYear={false}
-            numberOfMonths={3}
+            numberOfMonths={numberOfMonths}
             className="rmdp-mobile bg-dark purple"
             showOtherDays={false}
             weekStartDayIndex={1}
             onChange={handleChange}
-            plugins={[
-                <DatePanel />,
-            ]}
+            plugins={[<DatePanel />]}
             mapDays={({ date }) => {
                 let style = {
                     fontWeight: 'normal',

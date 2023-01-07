@@ -3,11 +3,11 @@ import {useContext, useEffect} from "react";
 import {EventContext} from "../context/EventContext";
 import eventService from "../services/EventService";
 import {Layout} from "../layouts/Layout";
-import {Link} from "react-router-dom";
 import {GridCell, GridContainer} from "../assets/styles/Containers";
 import {CreateEvent} from "../features/Event/components/CreateEvent";
 import styled from "styled-components";
 import {EventListItem} from "../features/Event/components/EventListItem";
+import {List} from "../layouts/Components/StyledComponents";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -19,12 +19,6 @@ const GridCellStyled = styled(GridCell)`
   border-radius: 5px;
   box-shadow: 2px 2px 3px #000;
 `
-
-const List = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-`;
 
 export default function Events() {
     const { jwt } = useContext(AuthContext);

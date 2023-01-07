@@ -3,6 +3,8 @@ import * as React from 'react';
 import {useContext} from "react";
 import {EventContext} from "../../../context/EventContext";
 import User from "../../../types/User";
+import {MemberListItem} from "./MemberListItem";
+import {List, Panel} from "../../../layouts/Components/StyledComponents";
 
 export const Members = () => {
     const { event } = useContext(EventContext);
@@ -12,14 +14,14 @@ export const Members = () => {
         members = event.members.length === 0
             ? <p>No one (yet).</p>
             : event.members.map((member: User) => (
-                <p key={member.id}>{member.displayName ?? member.username ?? 'New User'}</p>
+                <MemberListItem key={member.id} member={member} event={event} />
             ))
     }
 
     return (
-        <div>
-            <h5>Members</h5>
-            {members}
-        </div>
+        <Panel>
+            <div><h4>Members</h4></div>
+            <List>{members}</List>
+        </Panel>
     );
 };
