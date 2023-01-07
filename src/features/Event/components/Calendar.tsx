@@ -62,14 +62,11 @@ export const Calendar = () => {
         } else {
 
             if (newDates.length > calendarPickedDates.length) {
-                console.log("Adding date");
                 let newDate = getDifference(newDates, calendarPickedDates)[0];
-                console.log(newDate)
                 setCalendarPickedDates((dates: DateObject[]) => [...dates, newDate])
                 // addDate(jwt, {date: newDate.format(), eventId: event.id});
                 dateService.pickDate(jwt, { date: newDate.format(), eventId: event.id })
             } else {
-                console.log("Removing date")
                 let removedDate = getDifference(calendarPickedDates, newDates)[0];
                 setCalendarPickedDates((dates: DateObject[]) => dates.filter((date: DateObject) => date.toUnix() !== removedDate.toUnix() ))
                 dateService.unpickDate(jwt, { date: removedDate.format(), eventId: event.id })

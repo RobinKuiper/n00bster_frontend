@@ -9,7 +9,7 @@ import {List, Panel} from "../../../layouts/Components/StyledComponents";
 import {Loader} from "../../../layouts/Components/Loader";
 import {useParams} from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
-import {Doughnut, getElementAtEvent} from "react-chartjs-2";
+import {Doughnut} from "react-chartjs-2";
 import {PickedDateListItem} from "./PickedDateListItem";
 import styled from "styled-components";
 
@@ -176,11 +176,6 @@ export const PickedDates = () => {
         ],
     };
 
-    const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        // @ts-ignore
-        console.log(getElementAtEvent(chartRef.current, e))
-    }
-
     return (
         <Panel alignItems={'center'}>
             {/*<Flex direction={'row'}>*/}
@@ -197,7 +192,6 @@ export const PickedDates = () => {
                                     ref={chartRef}
                                     data={data}
                                     options={{ plugins: { legend: { position: 'bottom' } } }}
-                                    onClick={handleClick}
                                 />
                             </div>
 

@@ -67,10 +67,6 @@ export default function Event() {
                 console.log("Socket Disconnected")
             });
 
-            socket.on('message', () => {
-                console.log("Pong received")
-            });
-
             socket.on('date_picked', (date) => {
                 setAllPickedDates((dates: Array<{ user: User, date: string}>) => [...dates, date])
             });
@@ -111,8 +107,6 @@ export default function Event() {
     }, [event])
 
     const updateNecessities = (newNecessity: Necessity) => {
-        console.log("Updating necessities")
-        console.log(newNecessity)
         setNecessities((necessities: Necessity[]) => necessities.map((n: Necessity) => {
             if (newNecessity.id === n.id) {
                 if (!Array.isArray(newNecessity.members)) {

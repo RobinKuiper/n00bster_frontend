@@ -32,7 +32,6 @@ const AuthProvider: React.FC<Props> = ({ children }: Props) => {
   useEffect(() => {
     if(jwt) return;
 
-    console.log("Check Auth.");
     const storedJwt = localStorage.getItem('jwt');
     if (storedJwt) {
       login(storedJwt);
