@@ -30,19 +30,24 @@ type Props = {
 export const NecessityListItem = ({ necessity, event }: Props) => {
     const {jwt, userId} = useContext(AuthContext);
     const [checked, setChecked] = useState(false)
+    const [hasNecessity, setHasNecessity] = useState(false)
     const [completed, setCompleted] = useState(necessity.amount !== -1 && necessity.members.length >= necessity.amount)
 
     useEffect(() => {
-        setCompleted(necessity.amount !== -1 && necessity.members.length >= necessity.amount)
+        let c = necessity.amount !== -1 && necessity.members.length >= necessity.amount;
+        setCompleted(c)
 
-        if (!completed) {
-            let hasNecessity = false;
-            necessity.members.forEach(member => {
-                if (member.id === userId) {
-                    hasNecessity = true;
-                }
-            })
-            setChecked(hasNecessity)
+        setHasNecessity(false)
+        let has = false;
+        necessity.members.forEach(member => {
+            if (member.id === userId) {
+                setHasNecessity(true)
+                has = true;
+            }
+        })
+
+        if (!c) {
+            setChecked(has)
         } else {
             setChecked(true)
         }
@@ -69,7 +74,7 @@ export const NecessityListItem = ({ necessity, event }: Props) => {
         <table>
             <tr>
                 <td style={{ width: '45%', textDecoration: completed ? 'line-through' : ''}}>
-                    <Checkbox checked={checked} onChange={handleChange} disabled={completed} />
+                    <Checkbox checked={checked} onChange={handleChange} disabled={!hasNecessity && completed} />
                     <span>{necessity.name} </span>
                     {necessity.amount === -1 && <CgInfinity style={{ display: 'inline' }} />}
                     {necessity.amount > 1 && (

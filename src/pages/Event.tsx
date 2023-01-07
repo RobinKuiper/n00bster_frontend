@@ -115,7 +115,10 @@ export default function Event() {
         console.log(newNecessity)
         setNecessities((necessities: Necessity[]) => necessities.map((n: Necessity) => {
             if (newNecessity.id === n.id) {
-                console.log("replacing")
+                if (!Array.isArray(newNecessity.members)) {
+                    // @ts-ignore
+                    newNecessity.members = Object.values(newNecessity.members).map((member: User) => member)
+                }
                 return newNecessity;
             }
             return n;
