@@ -14,11 +14,12 @@ import socketIOClient from "socket.io-client";
 import User from "../types/User";
 import Necessity from "../types/Necessity";
 import {Loader} from "../layouts/Components/Loader";
+import { Notification } from '../layouts/Components/StyledComponents'
 
 export default function Event() {
     const { identifier = '' } = useParams()
     const { jwt, userId, displayName } = useContext(AuthContext);
-    const { event, setEvent, setAllPickedDates, setAllowedDates, setNecessities, setUsersPickedDates } = useContext(EventContext);
+    const { event, setEvent, allowedDates, setAllPickedDates, setAllowedDates, setNecessities, setUsersPickedDates } = useContext(EventContext);
     const { loading, setLoading } = useContext(LoadingContext);
 
     // Get event if we don't have it yet.
@@ -107,6 +108,7 @@ export default function Event() {
 
     return (
         <Layout>
+            { allowedDates.length === 0 && <Notification type={'warning'}>Do not forget to pick some dates that other people can choose from.</Notification> }
             {!loading && event ? (
                 <GridContainer columns={'auto minmax(0, 1fr)'} rows={'auto auto minmax(0, 1fr)'}>
                     <GridCell area='1 / 1 / 1 / 3' border='none'>

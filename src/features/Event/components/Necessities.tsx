@@ -90,7 +90,7 @@ export const Necessities = () => {
                         <NecessityItemContainer wrap={'wrap'} direction={'row'}>
                             {necessities.length ? necessities.map((necessity: Necessity) => (
                                 <NecessityListItem key={necessity.id} necessity={necessity} event={event} />
-                            )) : <li>Nothing (yet).</li>}
+                            )) : <div>Nothing (yet).</div>}
                         </NecessityItemContainer>
                     </div>
                 </>

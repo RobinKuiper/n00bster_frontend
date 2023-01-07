@@ -28,6 +28,7 @@ export const EventInfo = () => {
                     </div>
 
                     <AvatarList>
+                        { event.members.length > 0 && <span><Avatar user={event.owner} size={'medium'} tooltipPosition={'bottom'} /></span>}
                         { event.members.map((member: User) => (
                             <span key={member.id}><Avatar user={member} size={'medium'} tooltipPosition={'bottom'} /></span>
                         ))}

@@ -56,3 +56,26 @@ export const List = styled.ul`
   margin: 0;
   padding: 0;
 `;
+
+type NotificationProps = {
+    type: 'info' | 'warning' | 'error' | 'success';
+}
+export const Notification = styled.div<NotificationProps>`
+  background: ${props =>
+    props.type === 'info' ? 'lightcoral'
+        : props.type === 'warning' ? 'lightsalmon'
+            : props.type === 'error' ? 'lightcoral'
+                : props.type === 'success' ? 'lightcoral'
+                    : 'lightcoral'};
+  border: 1px solid ${props =>
+    props.type === 'info' ? 'lightcoral'
+        : props.type === 'warning' ? '#e56262'
+            : props.type === 'error' ? '#f88d61'
+                : props.type === 'success' ? 'lightcoral'
+                    : 'lightcoral'};
+  margin: auto;
+  width: 50%;
+  text-align: center; 
+  padding: 5px 0;
+  border-radius: 5px;
+`

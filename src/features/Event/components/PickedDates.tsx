@@ -11,8 +11,16 @@ import {useParams} from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
 import {Doughnut, getElementAtEvent} from "react-chartjs-2";
 import {PickedDateListItem} from "./PickedDateListItem";
+import styled from "styled-components";
 
 ChartJS.register(ArcElement, Tooltip);
+
+const NoDates = styled.p`
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #6B646B;
+`
 
 interface ObjectType {
     user: User,
@@ -181,23 +189,29 @@ export const PickedDates = () => {
             {/*</Flex>*/}
 
             {!loading ? (
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gridAutoRows: '1fr' }}>
-                    <div style={{ margin: '0 auto', width: '80%' }}>
-                        <Doughnut
-                            ref={chartRef}
-                            data={data}
-                            options={{ plugins: { legend: { position: 'bottom' } } }}
-                            onClick={handleClick}
-                        />
-                    </div>
+                <div>
+                    {Object.keys(groupedPickedDates).length ? (
+                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gridAutoRows: '1fr' }}>
+                            <div style={{ margin: '0 auto', width: '80%' }}>
+                                <Doughnut
+                                    ref={chartRef}
+                                    data={data}
+                                    options={{ plugins: { legend: { position: 'bottom' } } }}
+                                    onClick={handleClick}
+                                />
+                            </div>
 
-                    <div>
-                        <List>
-                            { Object.keys(groupedPickedDates).map((key: string, index) => (
-                                <PickedDateListItem key={index} date={key} votes={groupedPickedDates[key]} color={textColors[index%colors.length]} />
-                            )) }
-                        </List>
-                    </div>
+                            <div>
+                                <List>
+                                    { Object.keys(groupedPickedDates).map((key: string, index) => (
+                                        <PickedDateListItem key={index} date={key} votes={groupedPickedDates[key]} color={textColors[index%colors.length]} />
+                                    )) }
+                                </List>
+                            </div>
+                        </div>
+                    ) : (
+                        <NoDates>No dates picked (yet).</NoDates>
+                    )}
                 </div>
             ) : (
                 <Loader size={100} />
