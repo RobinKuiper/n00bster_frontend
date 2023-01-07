@@ -16,12 +16,13 @@ const Image = styled.div<ImageProps>`
   width: ${props => props.size === 'small' ? 30 : props.size === 'medium' ? 50 : 90}px;
   height: ${props => props.size === 'small' ? 30 : props.size === 'medium' ? 50 : 90}px;
   padding: 5px;
-  font-size: ${props => props.size === 'small' ? '1rem' : props.size === 'medium' ? '1.5rem' : '3rem'};
+  font-size: ${props => props.size === 'small' ? '.8rem' : props.size === 'medium' ? '1.5rem' : '3rem'};
   border-radius: 50%;
   text-align: center;
   box-shadow: ${props => props.size === 'small' ? '1px 1px 2px rgba(0, 0, 0)' : props.size === 'medium' ? '2px 2px 3px rgba(0, 0, 0)' : '1px 1px 2px rgba(0, 0, 0)'};
   font-weight: 700;
   vertical-align: middle;
+  cursor: default;
 `
 
 type Props = {
