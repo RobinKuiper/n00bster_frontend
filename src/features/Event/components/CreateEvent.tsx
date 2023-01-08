@@ -1,10 +1,13 @@
 // @flow
 import * as React from 'react';
 import eventService from "../../../services/EventService";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../../context/AuthContext";
 import {useNavigate} from "react-router-dom";
 import styled from "styled-components";
+import Modal from "react-modal"
+import {modalStyles} from "../../../assets/styles/CustomStyles";
+import {AuthForms} from "../../Auth/AuthForms";
 
 const Form = styled.form`
     display: flex;
@@ -36,9 +39,36 @@ export const CreateEvent = () => {
     const { jwt, login } = useContext(AuthContext);
     const [title, setTitle] = useState<string>("");
     const navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false)
+    // const [registering, setRegistering] = useState(false)
 
-    const handleSubmit = async (e: Event) => {
+    useEffect(() => {
+        let interval = setTimeout(() => {
+            if (jwt) {
+                clearTimeout(interval)
+                createEvent()
+                // setRegistering(false)
+            }
+        }, 500)
+    }, [isOpen])
+
+    function closeModal() {
+        setIsOpen(false);
+    }
+
+    const handleSubmit = (e: Event) => {
         e.preventDefault();
+
+        // setRegistering(true);
+
+        createEvent();
+    }
+
+    const createEvent = async () => {
+        if (!jwt) {
+            return setIsOpen(true)
+        }
+
         let data = {
             title,
         }
@@ -57,13 +87,23 @@ export const CreateEvent = () => {
             // setEvent(event);
             navigate('/event/' + event.identifier);
         }
-
     }
 
     return (
-        <Form onSubmit={handleSubmit as any}>
-            <input type="text" id="title" name="title" placeholder="Title" onChange={(e) => setTitle(e.target.value)} value={title} />
-            <input type="submit" value="Create" />
-        </Form>
+        <>
+            <Form onSubmit={handleSubmit as any}>
+                <input type="text" id="title" name="title" placeholder="Title" onChange={(e) => setTitle(e.target.value)} value={title} />
+                <input type="submit" value="Create" />
+            </Form>
+
+            <Modal
+                isOpen={isOpen}
+                onRequestClose={closeModal}
+                style={modalStyles}
+                contentLabel="Auth Modal"
+            >
+                <AuthForms closeModal={closeModal} startTab={2} />
+            </Modal>
+        </>
     );
 };

@@ -17,7 +17,7 @@ const AuthService = {
         let path = '/authentication/register';
 
         if(visitor){
-            path += 'guest';
+            path += '/guest';
         }
 
         return await postRequest(path,null, data)

@@ -1,5 +1,5 @@
 import {AuthContext} from "../context/AuthContext";
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import {EventContext} from "../context/EventContext";
 import eventService from "../services/EventService";
 import {useParams} from "react-router-dom";
@@ -15,36 +15,48 @@ import User from "../types/User";
 import Necessity from "../types/Necessity";
 import {Loader} from "../layouts/Components/Loader";
 import { Notification } from '../layouts/Components/StyledComponents'
+import {modalStyles} from "../assets/styles/CustomStyles";
+import {AuthForms} from "../features/Auth/AuthForms";
+import Modal from "react-modal";
+import * as React from "react";
 
 export default function Event() {
     const { identifier = '' } = useParams()
     const { jwt, userId, displayName } = useContext(AuthContext);
     const { event, setEvent, allowedDates, setAllPickedDates, setAllowedDates, setNecessities, setUsersPickedDates } = useContext(EventContext);
     const { loading, setLoading } = useContext(LoadingContext);
+    const [isOpen, setIsOpen] = useState(false)
+
+    // Check if we are logged in
+    useEffect(() => {
+        if (!jwt) {
+            setIsOpen(true)
+        }
+    }, [jwt]);
 
     // Get event if we don't have it yet.
     useEffect(() => {
-        if(!event || event.identifier !== identifier) {
+        if(jwt && (!event || event.identifier !== identifier)) {
             setLoading(true);
             setAllPickedDates([])
             setAllowedDates([])
             setNecessities([])
             setUsersPickedDates([])
-            if(jwt) {
-                eventService.getEvent(jwt, identifier).then(event => {
-                    if(event){
+
+            eventService.getEvent(jwt, identifier).then(event => {
+                if(event){
+                    event.isOwner = userId === event.owner.id
+                    setEvent(event)
+                    setLoading(false);
+                } else {
+                    eventService.joinEvent(jwt, identifier).then((event) => {
                         event.isOwner = userId === event.owner.id
                         setEvent(event)
                         setLoading(false);
-                    } else {
-                        eventService.joinEvent(jwt, identifier).then((event) => {
-                            event.isOwner = userId === event.owner.id
-                            setEvent(event)
-                            setLoading(false);
-                        })
-                    }
-                }).catch((err) => console.log(err));
-            }
+                    })
+                }
+            }).catch((err) => console.log(err));
+
         }
         // @ts-ignore
     }, [identifier, jwt]);
@@ -106,6 +118,10 @@ export default function Event() {
         }
     }, [event])
 
+    const closeModal = () => {
+        setIsOpen(false)
+    }
+
     const updateNecessities = (newNecessity: Necessity) => {
         setNecessities((necessities: Necessity[]) => necessities.map((n: Necessity) => {
             if (newNecessity.id === n.id) {
@@ -144,6 +160,14 @@ export default function Event() {
             ) : (
                   <Loader />
             )}
+            <Modal
+                isOpen={isOpen}
+                onRequestClose={closeModal}
+                style={modalStyles}
+                contentLabel="Auth Modal"
+            >
+                <AuthForms closeModal={closeModal} startTab={2} joining={true} />
+            </Modal>
         </Layout>
     );
 }

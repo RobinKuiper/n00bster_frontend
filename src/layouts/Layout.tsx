@@ -6,25 +6,9 @@ import {useContext, useState} from "react";
 import {AuthContext} from "../context/AuthContext";
 import Modal from "react-modal";
 import {AuthForms} from "../features/Auth/AuthForms";
+import {modalStyles} from "../assets/styles/CustomStyles";
 
 Modal.setAppElement('#root');
-
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        // marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        backgroundColor: '#24333C',
-        border: '1px solid #19242a',
-        boxShadow: '0 4px 10px 4px rgba(19,35,47,0.6)'
-    },
-    overlay: {
-        backgroundColor: 'rgba(47,45,45,0.68)'
-    },
-};
 
 const Container = styled.div`
 
@@ -127,8 +111,8 @@ export const Layout = ({children}: Props) => {
             <Modal
                 isOpen={isOpen}
                 onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Example Modal"
+                style={modalStyles}
+                contentLabel="Auth Modal"
             >
                 <AuthForms closeModal={closeModal} />
             </Modal>
