@@ -93,7 +93,7 @@ export const Profile = () => {
                 setIsGuest(!user.email)
 
                 setDisplayName(user.displayName)
-                setEmail(user.email)
+                setEmail(user.email);
                 setColor(user.color);
             });
         }
