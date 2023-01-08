@@ -1,4 +1,4 @@
-import {getRequest, postRequest} from "../lib/Api";
+import {getRequest, postRequest, putRequest} from "../lib/Api";
 
 const EventService = {
     createEvent: async (jwt: string | null, data: { title: string }) => {
@@ -21,6 +21,12 @@ const EventService = {
 
     getAllEvents: async (jwt: string) => {
         return await getRequest(`/events`, jwt).catch(err => {
+            console.log("ERR", err)
+        });
+    },
+
+    updateEvent: async (jwt: string, data: { eventId: number, title: string, description: string }) => {
+        return await putRequest(`/events`, jwt, data).catch(err => {
             console.log("ERR", err)
         });
     }

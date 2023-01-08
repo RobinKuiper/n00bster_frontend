@@ -137,12 +137,12 @@ export default function Event() {
 
     return (
         <Layout>
-            { event?.isOwner && allowedDates.length === 0 && <Notification type={'warning'}>Do not forget to pick some dates where other people can choose from.</Notification> }
-            { !event?.isOwner && allowedDates.length === 0 && <Notification type={'info'}>{event?.owner.displayName} has not allowed any dates to be picked yet.</Notification> }
             {!loading && event ? (
                 <GridContainer columns={'auto minmax(0, 1fr)'} rows={'auto auto minmax(0, 1fr)'}>
                     <GridCell area='1 / 1 / 1 / 3' border='none'>
                         <EventInfo />
+                        { event?.isOwner && allowedDates.length === 0 && <Notification type={'warning'}>Do not forget to pick some dates where other people can choose from.</Notification> }
+                        { !event?.isOwner && allowedDates.length === 0 && <Notification type={'info'}>{event?.owner.displayName} has not allowed any dates to be picked yet.</Notification> }
                     </GridCell>
                     <GridCell area='2 / 1 / 3 / 2' smallArea='2 / 1 / 2 / 4' border='none'>
                         <Calendar />

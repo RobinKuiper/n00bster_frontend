@@ -77,7 +77,7 @@ export const NecessityListItem = ({ necessity, event }: Props) => {
                         )}
                     </td>
                     <td style={{ width: '45%'}}>
-                        <AvatarList marginRight={'-15px'} members={necessity.members} />
+                        <AvatarList marginRight={'-15'} members={necessity.members} />
                     </td>
                     <td style={{ width: '10%'}}>
                         {(event.isOwner || necessity.creator.id === userId) && (

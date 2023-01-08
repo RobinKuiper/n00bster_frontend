@@ -34,7 +34,7 @@ export const PickedDateListItem = ({ date, votes, color }: Props) => {
                 <div></div>
                 {date} ({votes.length})
             </Date>
-            <AvatarList marginRight={'-10px'} members={votes} userKey='user' />
+            <AvatarList marginRight={'-10'} members={votes} userKey='user' />
         </ListItem>
     );
 };

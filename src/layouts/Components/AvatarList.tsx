@@ -9,8 +9,10 @@ type AvatarsProps = {
     marginRight: string;
 }
 const Avatars = styled.div<AvatarsProps>`
+  margin-right: ${props => -props.marginRight}px;
+  
   > * {
-    margin-right: ${props => props.marginRight};
+    margin-right: ${props => props.marginRight}px;
   }
 `
 
