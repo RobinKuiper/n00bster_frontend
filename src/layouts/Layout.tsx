@@ -1,7 +1,7 @@
 // @flow 
 import * as React from 'react';
 import styled from "styled-components";
-import {Link} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import {useContext, useState} from "react";
 import {AuthContext} from "../context/AuthContext";
 import Modal from "react-modal";
@@ -22,7 +22,7 @@ const TopBar = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 50px;
-  background-color: #292929;
+  background-color: #24333C;
   color: white;
   padding: 0 20px;
 `
@@ -38,24 +38,33 @@ const Menu = styled.ul`
   padding: 0;
 `;
 
-const MenuItem = styled(Link)`
+const MenuItem = styled(NavLink)`
   margin: 0 10px;
-  font-size: 14px;
+  font-size: 1rem;
   color: white;
   text-decoration: none;
 
   &:hover {
     cursor: pointer;
+    font-weight: bold;
+  }
+  
+  &.active {
+    font-weight: bold;
   }
 `;
 
-const LogoutButton = styled.button`
-  background: none;
+const Button = styled.button`
+  background-color: #8b4cd7;
   border: none;
   color: white;
-  font-size: 14px;
+  //font-weight: 600;
+  //font-size: 1rem;
+  padding: 5px 40px;
+  margin-left: 10px;
 
   &:hover {
+    background-color: #671cbe;
     cursor: pointer;
   }
 `;
@@ -65,12 +74,12 @@ const Content = styled.div`
 `
 
 const routes = [
+    // {
+    //     title: 'Home',
+    //     path: '/'
+    // },
     {
-        title: 'Home',
-        path: '/'
-    },
-    {
-        title: 'Events',
+        title: 'All Events',
         path: '/events'
     }
 ]
@@ -92,17 +101,26 @@ export const Layout = ({children}: Props) => {
                 <Title>n00bsters</Title>
                 <Menu>
                     {routes.map(item => (
-                        <MenuItem key={item.path} to={item.path}>{item.title}</MenuItem>
+                        <li>
+                            <MenuItem
+                                className={({ isActive }) =>
+                                    isActive ? 'active' : ''
+                                }
+                                key={item.path}
+                                to={item.path}>
+                                {item.title}
+                            </MenuItem>
+                        </li>
                     ))}
                 </Menu>
                 {isLoggedIn ? (
                     <div>
-                        <span>{displayName}</span>
-                        <LogoutButton onClick={logout}>Logout</LogoutButton>
+                        <MenuItem to={'/profile'}>{displayName}</MenuItem>
+                        <Button onClick={logout}>Logout</Button>
                     </div>
                 ) : (
                     <div>
-                        <button onClick={() => setIsOpen(true)}>Login</button>
+                        <Button onClick={() => setIsOpen(true)}>Login</Button>
                     </div>
                 )}
             </TopBar>
