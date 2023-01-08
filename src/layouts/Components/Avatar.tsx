@@ -8,11 +8,12 @@ import uuid from 'react-uuid';
 
 type ImageProps = {
     size: 'small' | 'medium' | 'large';
+    color?: string;
 }
 const Image = styled.div<ImageProps>`
   display: table-cell;
-  background: #fff;
-  border: 1px solid #b9b8b8;
+  background: ${props => props.color};
+  border: 1px solid #565151;
   width: ${props => props.size === 'small' ? 30 : props.size === 'medium' ? 50 : 90}px;
   height: ${props => props.size === 'small' ? 30 : props.size === 'medium' ? 50 : 90}px;
   padding: 5px;
@@ -27,18 +28,20 @@ const Image = styled.div<ImageProps>`
 
 type Props = {
     user: User;
+    color?: string;
     size?: 'small' | 'medium' | 'large';
     tooltipPosition?: 'top' | 'bottom' | 'left' | 'right';
-    tooltipVariant?: 'dark' | 'light' | 'success' | 'warning' | 'error' | 'info'
+    tooltipVariant?: 'dark' | 'light' | 'success' | 'warning' | 'error' | 'info';
 };
-export const Avatar = ({ user, size = 'small', tooltipPosition = 'bottom', tooltipVariant = 'dark' }: Props) => {
+export const Avatar = ({ user, size = 'small', tooltipPosition = 'bottom', tooltipVariant = 'dark', color }: Props) => {
 
     const letter = user.displayName.charAt(0);
     const id = uuid();
+    color = color ?? user.color;
 
     return (
         <>
-            <Image id={id} size={size}>
+            <Image id={id} size={size} color={color}>
                 {letter}
             </Image>
             <Tooltip

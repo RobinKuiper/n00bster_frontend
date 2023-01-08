@@ -101,12 +101,11 @@ export const Layout = ({children}: Props) => {
                 <Title>n00bsters</Title>
                 <Menu>
                     {routes.map(item => (
-                        <li>
+                        <li key={item.path}>
                             <MenuItem
                                 className={({ isActive }) =>
                                     isActive ? 'active' : ''
                                 }
-                                key={item.path}
                                 to={item.path}>
                                 {item.title}
                             </MenuItem>

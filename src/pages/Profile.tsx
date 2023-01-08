@@ -6,9 +6,10 @@ import authService from "../services/AuthService";
 import {AuthContext} from "../context/AuthContext";
 import User from "../types/User";
 import {GridCell, GridContainer} from "../assets/styles/Containers";
-import {Panel} from "../layouts/Components/StyledComponents";
+import {Flex, Panel} from "../layouts/Components/StyledComponents";
 import styled from "styled-components";
 import {toast} from "react-toastify";
+import {Avatar} from "../layouts/Components/Avatar";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -50,6 +51,30 @@ const Form = styled.form`
   }
 `
 
+const Colorpicker = styled(Flex)`
+    
+`
+
+type ColorProps = {
+    color: string;
+}
+const Color = styled.div<ColorProps>`
+  width: 30px;
+  height: 30px;
+  background-color: ${props => props.color};
+  border-radius: 50%;
+  border: 1px solid lightgray;
+`
+
+const colors = [
+    '#8b4cd7',
+    '#606f73',
+    '#d5375e',
+    '#3776d5',
+    '#37d564',
+    '#d5a837'
+]
+
 export const Profile = () => {
     const { jwt } = useContext(AuthContext)
     const [user, setUser] = useState<User>();
@@ -59,6 +84,7 @@ export const Profile = () => {
     const [password, setPassword] = useState<string>('');
     const [password2, setPassword2] = useState<string>('');
     const [displayName, setDisplayName] = useState<string>('');
+    const [color, setColor] = useState<string>('');
 
     useEffect(() => {
         if(jwt) {
@@ -68,6 +94,7 @@ export const Profile = () => {
 
                 setDisplayName(user.displayName)
                 setEmail(user.email)
+                setColor(user.color);
             });
         }
     }, [jwt]);
@@ -91,7 +118,8 @@ export const Profile = () => {
         if(!jwt) return;
 
         const data = {
-            displayName
+            displayName,
+            color
         }
 
         authService.updateProfileData(jwt, data).then(() => {
@@ -150,6 +178,14 @@ export const Profile = () => {
                                     <label htmlFor={'displayName'}>Display Name</label>
                                     <input required id='displayName' type="text" name="displayName" placeholder="Display Name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
                                 </div>
+                                <Flex gap={'20px'} alignItems={'center'}>
+                                    {user && <Avatar user={user} size={'medium'} color={color} />}
+                                    <Colorpicker direction={'row'} justifyContent={'center'} gap={'10px'}>
+                                        {colors.map((color) => (
+                                            <Color key={color} color={color} onClick={() => setColor(color)} />
+                                        ))}
+                                    </Colorpicker>
+                                </Flex>
                                 <button type={'submit'}>Save</button>
                             </Form>
                         </Panel>

@@ -90,7 +90,7 @@ export const EventInfo = () => {
                             {!editting ? <Title>{event.title}</Title> : <InlineInput type={'text'} value={title} onChange={(e) => setTitle(e.target.value)} />}
                             <EditButton onClick={() => setEditting(!editting)}><FaEdit /></EditButton>
                         </Flex>
-                        {!editting ? <p>{event.description}</p> : <InlineTextArea onChange={(e) => setDescription(e.target.value)}>{description}</InlineTextArea>}
+                        {!editting ? <p>{event.description}</p> : <InlineTextArea defaultValue={description} onChange={(e) => setDescription(e.target.value)} />}
                         {editting && <button onClick={handleUpdateEventData}>Save</button>}
                     </TitleBar>
 

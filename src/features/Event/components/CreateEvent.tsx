@@ -41,15 +41,18 @@ export const CreateEvent = () => {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false)
     // const [registering, setRegistering] = useState(false)
+    const [creatingEvent, setCreatingEvent] = useState(false)
 
     useEffect(() => {
-        let interval = setTimeout(() => {
-            if (jwt) {
-                clearTimeout(interval)
-                createEvent()
-                // setRegistering(false)
-            }
-        }, 500)
+        if(creatingEvent) {
+            let interval = setTimeout(() => {
+                if (jwt) {
+                    clearTimeout(interval)
+                    createEvent()
+                    setCreatingEvent(false)
+                }
+            }, 500)
+        }
     }, [isOpen])
 
     function closeModal() {
@@ -59,6 +62,7 @@ export const CreateEvent = () => {
     const handleSubmit = (e: Event) => {
         e.preventDefault();
 
+        setCreatingEvent(true)
         // setRegistering(true);
 
         createEvent();
@@ -85,6 +89,7 @@ export const CreateEvent = () => {
             // event.isOwner = userId === event.owner.id
             // console.log(event);
             // setEvent(event);
+            setCreatingEvent(false)
             navigate('/event/' + event.identifier);
         }
     }
@@ -92,7 +97,7 @@ export const CreateEvent = () => {
     return (
         <>
             <Form onSubmit={handleSubmit as any}>
-                <input type="text" id="title" name="title" placeholder="Title" onChange={(e) => setTitle(e.target.value)} value={title} />
+                <input type="text" id="title" name="title" placeholder="Title" onChange={(e) => setTitle(e.target.value)} value={title} required />
                 <input type="submit" value="Create" />
             </Form>
 

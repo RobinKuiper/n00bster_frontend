@@ -13,6 +13,7 @@ interface LoginData {
 
 interface ProfileData {
     displayName: string;
+    color: string;
 }
 
 const AuthService = {

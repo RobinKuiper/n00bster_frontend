@@ -79,6 +79,7 @@ export const Necessities = () => {
         <Panel direction={'column'} justifyContent={'center'}>
             <div>
                 <h4>Necessities</h4>
+                <p>What do you take with you?</p>
             </div>
 
             {!loading && event ? (
