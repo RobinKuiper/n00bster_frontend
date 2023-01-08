@@ -3,6 +3,7 @@ import {NotFound} from "../pages/404";
 import React from "react";
 import Event from "../pages/Event";
 import Events from "../pages/Events";
+import {Profile} from "../pages/Profile";
 
 const routes: RouteObject[] = [
     {
@@ -13,6 +14,10 @@ const routes: RouteObject[] = [
     {
         path: '/event/:identifier',
         element: <Event />
+    },
+    {
+        path: '/profile',
+        element: <Profile />
     },
     {
         path: '/events/',

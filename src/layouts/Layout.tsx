@@ -7,6 +7,9 @@ import {AuthContext} from "../context/AuthContext";
 import Modal from "react-modal";
 import {AuthForms} from "../features/Auth/AuthForms";
 import {modalStyles} from "../assets/styles/CustomStyles";
+import {ToastContainer} from "react-toastify";
+
+import 'react-toastify/dist/ReactToastify.css';
 
 Modal.setAppElement('#root');
 
@@ -116,6 +119,8 @@ export const Layout = ({children}: Props) => {
             >
                 <AuthForms closeModal={closeModal} />
             </Modal>
+
+            <ToastContainer />
         </Container>
     );
 };

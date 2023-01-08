@@ -1,14 +1,18 @@
-import {postRequest} from "../lib/Api";
+import {getRequest, postRequest, putRequest} from "../lib/Api";
 
 interface RegisterData {
     visitor?: boolean;
-    username?: string;
+    email?: string;
     password?: string;
 }
 
 interface LoginData {
-    username: string;
+    email: string;
     password: string;
+}
+
+interface ProfileData {
+    displayName: string;
 }
 
 const AuthService = {
@@ -27,7 +31,28 @@ const AuthService = {
         let path = '/authentication/login';
 
         return await postRequest(path,null, data)
-    }
+    },
+
+    getUserData: async (jwt: string) => {
+        let path = '/authentication';
+
+        return await getRequest(path, jwt)
+    },
+
+    updateProfileData: async (jwt: string, data: ProfileData) => {
+        let path = '/authentication';
+        return await putRequest(path, jwt, data);
+    },
+
+    updatePassword: async (jwt: string, data: { password: string }) => {
+        let path = '/authentication/password';
+        return await putRequest(path, jwt, data);
+    },
+
+    addCredentials: async (jwt: string, data: { email: string, password: string }) => {
+        let path = '/authentication/add_credentials';
+        return await putRequest(path, jwt, data);
+    },
 }
 
 export default AuthService;

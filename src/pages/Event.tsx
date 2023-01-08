@@ -86,7 +86,7 @@ export default function Event() {
             socket.on('date_unpicked', (date) => {
                 setAllPickedDates((dates: Array<{ user: User, date: string}>) =>
                     dates.filter((d) =>
-                        !(d.date === date.date && d.user.username === date.user.username) ));
+                        !(d.date === date.date && d.user.email === date.user.email) ));
             });
 
             socket.on('date_added', (date) => {

@@ -21,7 +21,7 @@ const Form = styled.form`
   flex-direction: column;
   gap: 10px;
 
-  input[type="text"], input[type="password"] {
+  input[type="text"], input[type="email"], input[type="password"] {
     padding: 12px 20px;
     margin: 8px 0;
     border: 1px solid #ccc;
@@ -97,8 +97,10 @@ type Props = {
 }
 export const AuthForms = ({ closeModal, startTab = 0, joining = false }: Props) => {
     const { login, jwt } = useContext(AuthContext);
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [displayName, setDisplayName] = useState('');
     const [password, setPassword] = useState('');
+    const [password2, setPassword2] = useState('');
     const [tab, setTab] = useState(startTab);
     const [error, setError] = useState('');
 
@@ -109,7 +111,7 @@ export const AuthForms = ({ closeModal, startTab = 0, joining = false }: Props) 
     const handleLogin = async (e: Event) => {
         e.preventDefault();
         let data = {
-            username,
+            email,
             password
         }
 
@@ -126,8 +128,15 @@ export const AuthForms = ({ closeModal, startTab = 0, joining = false }: Props) 
 
     const handleRegister = async (e: Event) => {
         e.preventDefault();
+
+        if (password !== password2) {
+            setError('Passwords do not match.');
+            return;
+        }
+
         let data = {
-            username,
+            email,
+            displayName,
             password
         }
 
@@ -195,7 +204,7 @@ export const AuthForms = ({ closeModal, startTab = 0, joining = false }: Props) 
 
                             <Form onSubmit={handleLogin as any}>
                                 <label>
-                                    <input type='text' name='username' placeholder='Username' onChange={(e) => setUsername(e.target.value)} />
+                                    <input type='email' name='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)} />
                                 </label>
                                 <label>
                                     <input type='password' name='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)} />
@@ -215,11 +224,19 @@ export const AuthForms = ({ closeModal, startTab = 0, joining = false }: Props) 
 
                             <Form onSubmit={handleRegister as any}>
                                 <label>
-                                    <input type='text' name='username' placeholder='Username' onChange={(e) => setUsername(e.target.value)} />
+                                    <input type='email' name='email' placeholder='Email' onChange={(e) => setEmail(e.target.value)} required={true} />
                                 </label>
                                 <label>
-                                    <input type='password' name='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)} />
+                                    <input type='text' name='displayName' placeholder='Display Name' onChange={(e) => setDisplayName(e.target.value)} required={true} />
                                 </label>
+                                <Flex direction={'row'} justifyContent={'space-between'} gap={'10px'}>
+                                    <label style={{ width: '100%' }}>
+                                        <input type='password' name='password' placeholder='Password' onChange={(e) => setPassword(e.target.value)} required={true} />
+                                    </label>
+                                    <label style={{ width: '100%' }}>
+                                        <input type='password' name='password2' placeholder='Password Confirm' onChange={(e) => setPassword2(e.target.value)} required={true} />
+                                    </label>
+                                </Flex>
                                 { error !== '' && <Notification type={'error'}>{error}</Notification>}
                                 <button type='submit'>SIGN UP</button>
                             </Form>

@@ -20,7 +20,7 @@ export const MemberListItem = ({ member, event }: Props) => {
     return (
         <ListItem key={member.id}>
             <span>
-                {member.displayName ?? member.username}
+                {member.displayName ?? member.email}
             </span>
             <span>
                 {(event.isOwner) && (

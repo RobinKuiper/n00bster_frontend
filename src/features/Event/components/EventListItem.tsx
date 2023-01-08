@@ -43,7 +43,7 @@ export const EventListItem = ({ event }: Props) => {
             </Title>
 
             <Owner>
-                {event.owner.displayName ?? event.owner.username}
+                {event.owner.displayName ?? event.owner.email}
             </Owner>
         </ListItem>
     );
