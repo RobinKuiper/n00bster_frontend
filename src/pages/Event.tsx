@@ -63,7 +63,7 @@ export default function Event() {
 
     useEffect(() => {
         if(event) {
-            const socket = socketIOClient('localhost:8081', {
+            const socket = socketIOClient(process.env.REACT_APP_WS_URL as string, {
                 extraHeaders: {
                     Authorization: 'Bearer ' + jwt,
                     User: displayName,
