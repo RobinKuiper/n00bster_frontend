@@ -43,6 +43,7 @@ export const Calendar = () => {
 
     useEffect(() => {
         setNumberOfMonths(width <= 1000 ? 1 : 3);
+        // setNumberOfMonths(1);
     }, [width]);
 
 

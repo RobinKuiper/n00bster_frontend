@@ -1,7 +1,7 @@
 import {RouteObject} from "react-router-dom";
 import {NotFound} from "../pages/404";
 import React from "react";
-import Event from "../pages/Event";
+import Event2 from "../pages/Event2";
 import Events from "../pages/Events";
 import {Profile} from "../pages/Profile";
 
@@ -13,7 +13,7 @@ const routes: RouteObject[] = [
     },
     {
         path: '/event/:identifier',
-        element: <Event />
+        element: <Event2 />
     },
     {
         path: '/profile',
